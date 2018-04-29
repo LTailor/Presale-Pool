@@ -30,4 +30,11 @@ contract('PresalePool', function(accounts) {
       ETHER.should.be.bignumber.equal(await presaleContract.getContributedSum({from: participant1}));
     });
 
+    it('only admin can add to whitelist', async () => {
+      await presaleContract.contribute({value: new web3.BigNumber(ETHER), from: participant1})
+      .should.be.rejectedWith(REVERT_ERR);
+      await presaleContract.addToWhitelist(participant1,{from: admin});
+      await presaleContract.contribute({value: new web3.BigNumber(ETHER), from: participant1});
+      ETHER.should.be.bignumber.equal(await presaleContract.getContributedSum({from: participant1}));
+    });
 });
