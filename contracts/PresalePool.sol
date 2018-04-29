@@ -85,9 +85,8 @@ contract PresalePool {
 
   function addAdmin(address admin) internal
   {
-    Participant storage adminInfo = participantsInfo[admin];
-    adminInfo.admin = true;
-    adminInfo.isWhitelisted = true;
+    participantsInfo[admin].admin = true;
+    participantsInfo[admin].isWhitelisted = true;
   }
 
   function contribute() onlyWhitelisted whenOpened payable external
@@ -96,10 +95,9 @@ contract PresalePool {
     participant.sum = participant.sum.add(msg.value);
   }
 
-  function getContributedSum() returns(uint)
+  function getContributedSum() constant returns(uint)
   {
-    Participant storage participant = participantsInfo[msg.sender];
-    return participant.sum;
+    return participantsInfo[msg.sender].sum;
   }
 
   function close() onlyAdmin
