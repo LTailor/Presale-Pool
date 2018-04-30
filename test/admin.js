@@ -13,28 +13,19 @@ const TestToken = artifacts.require("TestToken.sol");
 const ETHER = new web3.BigNumber(10).toPower(18);
 
 contract('PresalePool', function(accounts) {
-    let presaleContract;
-    const admin = accounts[0];
-    const participant1 = accounts[1];
-    beforeEach(async () => {
-        presaleContract = await PresalePool.new();
-        presaleContract.init([admin], {from: accounts[0]})
-    });
+  let presaleContract;
+  const admin = accounts[0];
+  const participant1 = accounts[1];
+  beforeEach(async () => {
+      presaleContract = await PresalePool.new();
+      presaleContract.init([admin], {from: accounts[0]})
+  });
 
-    describe('admin methods',async () => {
-      it('only admin can add to whitelist', async () => {
-      await presaleContract.contribute({value: new web3.BigNumber(ETHER), from: participant1})
-        .should.be.rejectedWith(REVERT_ERR);
-      await presaleContract.addToWhitelist(participant1,{from: admin});
-      await presaleContract.contribute({value: new web3.BigNumber(ETHER), from: participant1});
-      ETHER.should.be.bignumber.equal(await presaleContract.getContributedSum({from: participant1}));
-    });
-
+  describe('admin methods',async () => {
     it('only admin can add to whitelist', async () => {
-      await presaleContract.contribute({value: new web3.BigNumber(ETHER), from: participant1})
-      .should.be.rejectedWith(REVERT_ERR);
-      await presaleContract.addToWhitelist(participant1,{from: admin});
-      await presaleContract.contribute({value: new web3.BigNumber(ETHER), from: participant1});
-      ETHER.should.be.bignumber.equal(await presaleContract.getContributedSum({from: participant1}));
-    });
+
+    await presaleContract.addToWhitelist(participant1,{from: participant1}).should.be.rejectedWith(REVERT_ERR);
+    const status = await presaleContract.addToWhitelist(participant1,{from: admin});
+    expect(status.receipt.status).to.equal(1);
+  });});
 });
