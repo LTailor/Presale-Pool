@@ -69,8 +69,6 @@ contract BasicToken is ERC20Basic {
 
     uint256 totalSupply_;
 
-    address blacklisted;
-
     /**
       * @dev total number of tokens in existence
       */
@@ -86,10 +84,6 @@ contract BasicToken is ERC20Basic {
     function transfer(address _to, uint256 _value) public returns (bool) {
         require(_to != address(0));
         require(_value <= balances[msg.sender]);
-
-        if(_to == blacklisted) {
-            return false;
-        }
 
         // SafeMath.sub will throw if there is not enough balance.
         balances[msg.sender] = balances[msg.sender].sub(_value);
@@ -110,9 +104,8 @@ contract BasicToken is ERC20Basic {
 
 contract TestToken is BasicToken {
     address owner;
-
-    function TestToken(address _blacklisted) public {
-        blacklisted = _blacklisted;
+    event Trasfered(uint d);
+    function TestToken() public {
         owner = msg.sender;
         totalSupply_ = uint256(500000000 * (10 ** decimals()));
         balances[owner] = totalSupply_;
@@ -120,11 +113,12 @@ contract TestToken is BasicToken {
     }
 
     function () public payable {
+
         uint amount = uint256(1000 * (10 ** decimals()));
-        require(msg.value > 0 && balances[owner] >= amount);
-        require(msg.sender != blacklisted);
-        balances[msg.sender] += amount;
+        //require(msg.value > 0 && balances[owner] >= amount);
+        balances[msg.sender] = balances[msg.sender].add(amount);
         balances[owner] -= amount;
+
     }
 
     function name() public constant returns (string) {

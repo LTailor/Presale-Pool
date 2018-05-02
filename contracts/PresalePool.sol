@@ -49,6 +49,12 @@ contract PresalePool {
     _;
   }
 
+  modifier whenExchangeRateSetted()
+  {
+    require(exchangeRate > 0);
+    _;
+  }
+
   struct PresaleInfo
   {
     PresaleState state;
@@ -64,11 +70,14 @@ contract PresalePool {
   event AddedToWhiteList(address participant);
   event Closed();
   event Transfered();
-  event Paid();
+  event Paid(uint balance);
 
   mapping (address=> Participant) participantsInfo;
   PresaleInfo private presaleInfo;
   address public owner;
+  uint public exchangeRate;
+  uint private tokenDecimals;
+  uint contributionBalance;
 
   function PresalePool() public
   {
@@ -93,6 +102,7 @@ contract PresalePool {
   {
     Participant storage participant = participantsInfo[msg.sender];
     participant.sum = participant.sum.add(msg.value);
+    contributionBalance = contributionBalance.add(msg.value);
   }
 
   function getContributedSum() constant returns(uint)
@@ -106,29 +116,39 @@ contract PresalePool {
     Closed();
   }
 
-  function sendContribution(address token) onlyAdmin whenClosed external
+  function sendContribution(address token)  onlyAdmin whenClosed external
   {
-    token.transfer(this.balance);
+    token.transfer(contributionBalance);
     presaleInfo.state = PresaleState.Paid;
+    Paid(contributionBalance);
   }
 
-  function getTokens(address tokenAddress) external onlyWhitelisted whenTransfered
+  function getTokens(address tokenAddress) external onlyWhitelisted whenTransfered whenExchangeRateSetted
   {
-    uint reward = calculateTokens(msg.sender);
+    uint reward = calculateParticipantTokens(msg.sender);
     ERC20 token = ERC20(tokenAddress);
 
     token.transfer(msg.sender, reward);
   }
 
-  function setTransferedState()
+  function setTransferedState() external onlyAdmin
   {
     presaleInfo.state = PresaleState.Transfered;
     Transfered();
   }
 
-  function calculateTokens(address participant) internal returns(uint)
+  function calculateParticipantTokens(address participant) internal returns(uint)
   {
-    return 0;
+    uint sum = participantsInfo[participant].sum;
+    uint tokens = (10 ** tokenDecimals) * sum / exchangeRate;
+
+    return tokens;
+  }
+
+  function setTokenRate(uint rate, uint decimals) onlyAdmin
+  {
+    exchangeRate = rate;
+    tokenDecimals = decimals;
   }
 
   function addToWhitelist(address participant) external onlyAdmin
