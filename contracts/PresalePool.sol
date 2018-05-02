@@ -4,8 +4,8 @@ pragma solidity 0.4.23;
 import "./SafeMath.sol";
 
 interface ERC20 {
-    function transfer(address _to, uint _value) public returns (bool success);
-    function balanceOf(address _owner) public constant returns (uint balance);
+    function transfer(address _to, uint _value) external returns (bool success);
+    function balanceOf(address _owner) external constant returns (uint balance);
 }
 
 contract PresalePool {
@@ -78,13 +78,15 @@ contract PresalePool {
   uint public exchangeRate;
   uint private tokenDecimals;
   uint contributionBalance;
+  uint feePerEtherTeam;
+  uint feePerEtherPool;
 
-  function PresalePool() public
+  constructor() public
   {
     owner = msg.sender;
   }
 
-  function init(address[] _admins) public onlyOwner
+  function init(address[] _admins) external onlyOwner
   {
     presaleInfo.state = PresaleState.Opened;
     for (uint i = 0; i < _admins.length; i++) {
@@ -105,22 +107,25 @@ contract PresalePool {
     contributionBalance = contributionBalance.add(msg.value);
   }
 
-  function getContributedSum() constant returns(uint)
+  function getContributedSum() external view returns(uint)
   {
     return participantsInfo[msg.sender].sum;
   }
 
-  function close() onlyAdmin
+  function close() public onlyAdmin
   {
     presaleInfo.state = PresaleState.Closed;
-    Closed();
+
+    emit Closed();
   }
 
-  function sendContribution(address token)  onlyAdmin whenClosed external
+  function sendContribution(address token) external onlyAdmin whenClosed
   {
-    token.transfer(contributionBalance);
+    uint fee = calculateTotalValueFee(contributionBalance);
+    token.transfer(contributionBalance - fee);
     presaleInfo.state = PresaleState.Paid;
-    Paid(contributionBalance);
+
+    emit Paid(contributionBalance);
   }
 
   function getTokens(address tokenAddress) external onlyWhitelisted whenTransfered whenExchangeRateSetted
@@ -134,28 +139,49 @@ contract PresalePool {
   function setTransferedState() external onlyAdmin
   {
     presaleInfo.state = PresaleState.Transfered;
-    Transfered();
+
+    emit Transfered();
   }
 
-  function calculateParticipantTokens(address participant) internal returns(uint)
+  function calculateParticipantTokens(address participant) internal view  returns(uint)
   {
     uint sum = participantsInfo[participant].sum;
+    uint fee = calculateTotalValueFee(sum);
+    sum = sum.sub(fee);
+
     uint tokens = (10 ** tokenDecimals) * sum / exchangeRate;
 
     return tokens;
   }
 
-  function setTokenRate(uint rate, uint decimals) onlyAdmin
+  function setTokenRate(uint rate, uint decimals) external onlyAdmin
   {
     exchangeRate = rate;
     tokenDecimals = decimals;
+  }
+
+  function calculateTotalValueFee(uint value) internal view returns(uint)
+  {
+    uint fee = (value * (feePerEtherPool + feePerEtherTeam)) / 1 ether;
+    return fee;
+  }
+
+  function setTeamFeePerEther(uint fee) external onlyOwner
+  {
+    feePerEtherTeam = fee;
+  }
+
+  function setPoolFeePerEther(uint fee) external onlyAdmin
+  {
+    feePerEtherPool = fee;
   }
 
   function addToWhitelist(address participant) external onlyAdmin
   {
     Participant storage participantInfo = participantsInfo[participant];
     participantInfo.isWhitelisted = true;
-    AddedToWhiteList(participant);
+
+    emit AddedToWhiteList(participant);
   }
 
   function removeFromWhitelist(address participant) external onlyAdmin
