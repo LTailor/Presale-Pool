@@ -17,7 +17,7 @@ contract('PresalePool', function(accounts) {
     const participant1 = accounts[1];
     beforeEach(async () => {
         presaleContract = await PresalePool.new();
-        presaleContract.init([admin], {from: accounts[0]})
+        presaleContract.init([admin],admin, {from: accounts[0]})
     });
 
     it('constructor should set owner', async () => {

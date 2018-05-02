@@ -20,7 +20,7 @@ contract('PresalePool', function(accounts) {
   beforeEach(async () => {
       presaleContract = await PresalePool.new();
       testToken = await TestToken.new();
-      presaleContract.init([admin], {from: accounts[0]})
+      presaleContract.init([admin], admin, {from: accounts[0]})
   });
 
   describe('admin methods',async () => {

@@ -75,6 +75,7 @@ contract PresalePool {
   mapping (address=> Participant) participantsInfo;
   PresaleInfo private presaleInfo;
   address public owner;
+  address public distributionWallet;
   uint public exchangeRate;
   uint private tokenDecimals;
   uint contributionBalance;
@@ -86,9 +87,10 @@ contract PresalePool {
     owner = msg.sender;
   }
 
-  function init(address[] _admins) external onlyOwner
+  function init(address[] _admins, address _distributionWallet) external onlyOwner
   {
     presaleInfo.state = PresaleState.Opened;
+    distributionWallet = _distributionWallet;
     for (uint i = 0; i < _admins.length; i++) {
         addAdmin(_admins[i]);
     }
@@ -175,7 +177,7 @@ contract PresalePool {
   {
     feePerEtherPool = fee;
   }
-
+  
   function addToWhitelist(address participant) external onlyAdmin
   {
     Participant storage participantInfo = participantsInfo[participant];
