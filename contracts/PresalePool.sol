@@ -71,26 +71,35 @@ contract PresalePool {
   event Closed();
   event Transfered();
   event Paid(uint balance);
+  event GotTokens(address participant, uint tokens);
+  event TeamFeeSetted(uint feePerEther);
+  event PoolFeeSetted(uint feePerEther);
+  event ParticipateContributed(address participant);
 
   mapping (address=> Participant) participantsInfo;
   PresaleInfo private presaleInfo;
   address public owner;
   address public distributionWallet;
+  address public poolDistributionWallet;
   uint public exchangeRate;
   uint private tokenDecimals;
   uint contributionBalance;
   uint feePerEtherTeam;
   uint feePerEtherPool;
+  uint totalTeamFee;
+  uint totalPoolFee;
 
   constructor() public
   {
     owner = msg.sender;
   }
 
-  function init(address[] _admins, address _distributionWallet) external onlyOwner
+  function init(address[] _admins, address _distributionWallet, address _poolDistributionWallet) external onlyOwner
   {
     presaleInfo.state = PresaleState.Opened;
     distributionWallet = _distributionWallet;
+    poolDistributionWallet = _poolDistributionWallet;
+
     for (uint i = 0; i < _admins.length; i++) {
         addAdmin(_admins[i]);
     }
@@ -107,11 +116,18 @@ contract PresalePool {
     Participant storage participant = participantsInfo[msg.sender];
     participant.sum = participant.sum.add(msg.value);
     contributionBalance = contributionBalance.add(msg.value);
+
+    ParticipateContributed(msg.sender);
   }
 
   function getContributedSum() external view returns(uint)
   {
     return participantsInfo[msg.sender].sum;
+  }
+
+  function getContributedSumAfterFees() external view returns(uint)
+  {
+    return participantsInfo[msg.sender].sum - calculateTotalValueFee(participantsInfo[msg.sender].sum);
   }
 
   function close() public onlyAdmin
@@ -127,15 +143,16 @@ contract PresalePool {
     token.transfer(contributionBalance - fee);
     presaleInfo.state = PresaleState.Paid;
 
-    emit Paid(contributionBalance);
+    emit Paid(contributionBalance - fee);
   }
 
-  function getTokens(address tokenAddress) external onlyWhitelisted whenTransfered whenExchangeRateSetted
+  function getTokens(address tokenAddress) external
   {
     uint reward = calculateParticipantTokens(msg.sender);
     ERC20 token = ERC20(tokenAddress);
 
-    token.transfer(msg.sender, reward);
+    require(token.transfer(msg.sender, reward));
+    emit GotTokens(msg.sender, reward);
   }
 
   function setTransferedState() external onlyAdmin
@@ -168,16 +185,40 @@ contract PresalePool {
     return fee;
   }
 
+  function calculateTeamValueFee(uint value) internal view returns(uint)
+  {
+    uint fee = (value * feePerEtherTeam) / 1 ether;
+    return fee;
+  }
+
+  function calculatePoolValueFee(uint value) internal view returns(uint)
+  {
+    uint fee = (value * feePerEtherPool) / 1 ether;
+    return fee;
+  }
+
   function setTeamFeePerEther(uint fee) external onlyOwner
   {
     feePerEtherTeam = fee;
+    TeamFeeSetted(fee);
   }
 
   function setPoolFeePerEther(uint fee) external onlyAdmin
   {
     feePerEtherPool = fee;
+    PoolFeeSetted(fee);
   }
-  
+
+  function sendFeeToTeam() external onlyOwner
+  {
+    distributionWallet.transfer(calculateTeamValueFee(contributionBalance));
+  }
+
+  function sendFeeToPoolAdmin() external onlyAdmin
+  {
+    poolDistributionWallet.transfer(calculatePoolValueFee(contributionBalance));
+  }
+
   function addToWhitelist(address participant) external onlyAdmin
   {
     Participant storage participantInfo = participantsInfo[participant];

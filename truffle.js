@@ -6,13 +6,15 @@ module.exports = {
       host: "localhost",
       port: 7545,
       network_id: "*",
-      gasPrice: 1000000000
+      gasPrice: 1000,
+      gas: 4600000
     },
     test: {
       host: "localhost",
       port: 7545,
       network_id: "*",
-      gasPrice: 1000000000
+      gasPrice: 1000,
+      gas: 4600000
     }
   }
 };
