@@ -127,7 +127,7 @@ contract PresalePool {
 
   function getContributedSumAfterFees() external view returns(uint)
   {
-    return participantsInfo[msg.sender].sum - calculateTotalValueFee(participantsInfo[msg.sender].sum);
+    return participantsInfo[msg.sender].sum.sub(calculateTotalValueFee(participantsInfo[msg.sender].sum));
   }
 
   function close() public onlyAdmin
@@ -140,10 +140,10 @@ contract PresalePool {
   function sendContribution(address token) external onlyAdmin whenClosed
   {
     uint fee = calculateTotalValueFee(contributionBalance);
-    token.transfer(contributionBalance - fee);
+    token.transfer(contributionBalance.sub(fee));
     presaleInfo.state = PresaleState.Paid;
 
-    emit Paid(contributionBalance - fee);
+    emit Paid(contributionBalance.sub(fee));
   }
 
   function getTokens(address tokenAddress) external
@@ -168,7 +168,7 @@ contract PresalePool {
     uint fee = calculateTotalValueFee(sum);
     sum = sum.sub(fee);
 
-    uint tokens = (10 ** tokenDecimals) * sum / exchangeRate;
+    uint tokens = (10 ** tokenDecimals).mul(sum).div(exchangeRate);
 
     return tokens;
   }
@@ -181,19 +181,19 @@ contract PresalePool {
 
   function calculateTotalValueFee(uint value) internal view returns(uint)
   {
-    uint fee = (value * (feePerEtherPool + feePerEtherTeam)) / 1 ether;
+    uint fee = value.mul(feePerEtherPool.add(feePerEtherTeam)).div(1 ether);
     return fee;
   }
 
   function calculateTeamValueFee(uint value) internal view returns(uint)
   {
-    uint fee = (value * feePerEtherTeam) / 1 ether;
+    uint fee = value.mul(feePerEtherTeam).div(1 ether);
     return fee;
   }
 
   function calculatePoolValueFee(uint value) internal view returns(uint)
   {
-    uint fee = (value * feePerEtherPool) / 1 ether;
+    uint fee = value.mul(feePerEtherPool).div(1 ether);
     return fee;
   }
 
