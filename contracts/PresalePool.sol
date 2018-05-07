@@ -144,7 +144,7 @@ contract PresalePool {
     require(
         token.call.gas(gas).value(contributionBalance - fee)(data)
     );
-    //token.transfer(contributionBalance.sub(fee));
+
     presaleInfo.state = PresaleState.Paid;
 
     emit Paid(contributionBalance.sub(fee));
