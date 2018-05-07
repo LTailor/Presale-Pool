@@ -11,6 +11,7 @@
     "chai-as-promised": "^7.1.1",
     "chai-bignumber": "^2.0.2",
     "ganache-cli": "^6.1.0",
+    "solium": "^1.1.7",
     "truffle": "^4.1.7",
     "web3-eth": "^1.0.0-beta.34",
     "web3-eth-abi": "^1.0.0-beta.34"
@@ -18,7 +19,7 @@
   "devDependencies": {},
   "scripts": {
     "test": "truffle test",
-    "compile": "truffle compile"
+    "compile": "solium -d ./contracts; truffle compile"
   },
   "repository": {
     "type": "git",

@@ -5,7 +5,7 @@ import "./SafeMath.sol";
 
 interface ERC20 {
     function transfer(address _to, uint _value) external returns (bool success);
-    function balanceOf(address _owner) external constant returns (uint balance);
+    function balanceOf(address _owner) external view returns (uint balance);
 }
 
 contract PresalePool {
@@ -117,7 +117,7 @@ contract PresalePool {
     participant.sum = participant.sum.add(msg.value);
     contributionBalance = contributionBalance.add(msg.value);
 
-    ParticipateContributed(msg.sender);
+    emit ParticipateContributed(msg.sender);
   }
 
   function getContributedSum() external view returns(uint)
@@ -140,7 +140,7 @@ contract PresalePool {
   function sendContribution(address token, uint gasLimit, bytes data) external onlyAdmin whenClosed
   {
     uint fee = calculateTotalValueFee(contributionBalance);
-    uint gas = (gasLimit > 0) ? gasLimit : msg.gas;
+    uint gas = (gasLimit > 0) ? gasLimit : gasleft();
     require(
         token.call.gas(gas).value(contributionBalance - fee)(data)
     );
@@ -204,13 +204,13 @@ contract PresalePool {
   function setTeamFeePerEther(uint fee) external onlyOwner
   {
     feePerEtherTeam = fee;
-    TeamFeeSetted(fee);
+    emit TeamFeeSetted(fee);
   }
 
   function setPoolFeePerEther(uint fee) external onlyAdmin
   {
     feePerEtherPool = fee;
-    PoolFeeSetted(fee);
+    emit PoolFeeSetted(fee);
   }
 
   function sendFeeToTeam() external onlyOwner

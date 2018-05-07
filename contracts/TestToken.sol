@@ -29,7 +29,7 @@ contract TestToken {
 
     event GotEther(uint value);
 
-    function presale() payable {
+    function presale() payable  public {
       balanceOf[msg.sender] = 1000000 * (uint256(10) ** 18);
       emit GotEther(msg.value);
     }
