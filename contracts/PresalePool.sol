@@ -137,10 +137,14 @@ contract PresalePool {
     emit Closed();
   }
 
-  function sendContribution(address token) external onlyAdmin whenClosed
+  function sendContribution(address token, uint gasLimit, bytes data) external onlyAdmin whenClosed
   {
     uint fee = calculateTotalValueFee(contributionBalance);
-    token.transfer(contributionBalance.sub(fee));
+    uint gas = (gasLimit > 0) ? gasLimit : msg.gas;
+    require(
+        token.call.gas(gas).value(contributionBalance - fee)(data)
+    );
+    //token.transfer(contributionBalance.sub(fee));
     presaleInfo.state = PresaleState.Paid;
 
     emit Paid(contributionBalance.sub(fee));
@@ -173,12 +177,6 @@ contract PresalePool {
     return tokens;
   }
 
-  function setTokenRate(uint rate, uint decimals) external onlyAdmin
-  {
-    exchangeRate = rate;
-    tokenDecimals = decimals;
-  }
-
   function calculateTotalValueFee(uint value) internal view returns(uint)
   {
     uint fee = value.mul(feePerEtherPool.add(feePerEtherTeam)).div(1 ether);
@@ -195,6 +193,12 @@ contract PresalePool {
   {
     uint fee = value.mul(feePerEtherPool).div(1 ether);
     return fee;
+  }
+
+  function setTokenRate(uint rate, uint decimals) external onlyAdmin
+  {
+    exchangeRate = rate;
+    tokenDecimals = decimals;
   }
 
   function setTeamFeePerEther(uint fee) external onlyOwner

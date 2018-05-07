@@ -19,9 +19,9 @@ contract TestToken {
     }
 
     function transfer(address to, uint256 value) public returns (bool success) {
-        //require(balanceOf[msg.sender] >= value);
+        require(balanceOf[msg.sender] >= value);
 
-      //  balanceOf[msg.sender] -= value;  // deduct from sender's balance
+        balanceOf[msg.sender] -= value;  // deduct from sender's balance
         balanceOf[to] = value;          // add to recipient's balance
         emit Transfer(msg.sender, to, value);
         return true;
@@ -29,8 +29,8 @@ contract TestToken {
 
     event GotEther(uint value);
 
-    function () payable {
-    //  balanceOf[msg.sender] = 1000000 * (uint256(10) ** 18);
+    function presale() payable {
+      balanceOf[msg.sender] = 1000000 * (uint256(10) ** 18);
       emit GotEther(msg.value);
     }
 

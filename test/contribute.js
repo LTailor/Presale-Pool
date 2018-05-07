@@ -6,6 +6,7 @@ require('chai')
 .use(require('chai-bignumber')(web3.BigNumber))
 .should();
 
+const util = require('./util');
 
 const PresalePool = artifacts.require("PresalePool.sol");
 const TestToken = artifacts.require("TestToken.sol");
@@ -59,7 +60,7 @@ contract('PresalePool', function(accounts) {
         await presaleContract.close({from: admin});
 
         // admin of the pool sends contribution to the presale after pool is closed
-        await presaleContract.sendContribution(testToken.address.toLowerCase(), {from: admin});
+        await presaleContract.sendContribution(testToken.address.toLowerCase(), 0, util.testTokenPresaleData(), {from: admin});
         await presaleContract.setTransferedState({from: admin});
 
         // participants want to get tokens to their balances and we want to be sure that they have got true value of tokens

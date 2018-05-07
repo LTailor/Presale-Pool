@@ -6,6 +6,7 @@ require('chai')
 .use(require('chai-bignumber')(web3.BigNumber))
 .should();
 
+const util = require('./util.js');
 
 const PresalePool = artifacts.require("PresalePool.sol");
 const TestToken = artifacts.require("TestToken.sol");
@@ -26,7 +27,7 @@ contract('PresalePool', function(accounts) {
   const teamFee = new web3.BigNumber(10000);
   const poolFee = new web3.BigNumber(15000);
   const participantContribution = new web3.BigNumber(ETHER * 3);
-  
+
   describe('fees methods',async () => {
     before(async () => {
         presaleContract = await PresalePool.new();
@@ -48,7 +49,7 @@ contract('PresalePool', function(accounts) {
       await presaleContract.close({from: admin});
 
       // admin of the pool sends contribution to the presale after pool is closed
-      await presaleContract.sendContribution(testToken.address.toLowerCase(), {from: admin});
+      await presaleContract.sendContribution(testToken.address.toLowerCase(), 0, util.testTokenPresaleData(), {from: admin});
       await presaleContract.setTransferedState({from: admin});
 
       const presaleContrib = await presaleContract.getContributedSumAfterFees({from:participant});
