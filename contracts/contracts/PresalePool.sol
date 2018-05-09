@@ -88,6 +88,7 @@ contract PresalePool {
   event TeamFeeSetted(uint feePerEther);
   event PoolFeeSetted(uint feePerEther);
   event ParticipateContributed(address participant);
+  event ParticipantWithdrawed(address participant, uint amount);
 
   mapping (address=> Participant) participantsInfo;
   PresaleInfo private presaleInfo;
@@ -132,6 +133,16 @@ contract PresalePool {
     contributionBalance = contributionBalance.add(msg.value);
 
     emit ParticipateContributed(msg.sender);
+  }
+
+  function withdrawContribution() whenOpened external
+  {
+    Participant memory participant = participantsInfo[msg.sender];
+    contributionBalance = contributionBalance.sub(participant.sum);
+    require(msg.sender.call.value(participant.sum)());
+
+    emit ParticipantWithdrawed(msg.sender, participant.sum);
+    participant.sum = 0;
   }
 
   function checkContribution(uint value) internal view
