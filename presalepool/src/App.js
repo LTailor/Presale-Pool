@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Header, Wallet, CreateComponent } from './components';
+import { Header, Wallet, CreateComponent, DashboardComponent } from './components';
 import { Route } from 'react-router-dom';
 import './assets/stylesheets/application.css';
 
