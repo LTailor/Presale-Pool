@@ -1,0 +1,21 @@
+{
+  "name": "presalepool",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "node-sass-chokidar": "^1.2.2",
+    "react": "^16.3.2",
+    "react-dom": "^16.3.2",
+    "react-scripts": "1.1.4",
+    "react-validation": "^3.0.7"
+  },
+  "scripts": {
+    "build-css": "node-sass-chokidar src/assets/stylesheets/application.scss -o src/assets/stylesheets --output-style=compressed",
+    "start": "react-app-rewired start",
+    "build": "react-app-rewired build",
+    "test": "react-app-rewired test --env=jsdom"
+  },
+  "devDependencies": {
+    "react-app-rewired": "^1.5.2"
+  }
+}
