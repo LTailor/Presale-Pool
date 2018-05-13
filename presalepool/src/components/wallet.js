@@ -2,8 +2,40 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import Form from 'react-validation/build/form';
 import Button from 'react-validation/build/button';
+import swal from 'sweetalert';
+import { inject, observer } from "mobx-react";
+import generateElementWithMessage from "../helpers/UIHelper";
 
-export class Wallet extends React.Component {
+@inject("WalletStore")
+@observer
+export class WalletComponent extends React.Component {
+  constructor(props){
+    super(props);
+    this.walletStore = props.WalletStore;
+    this.onSubmit = this.onSubmit.bind(this);
+    this.onAddressChange = this.onAddressChange.bind(this);
+    this.state = {
+      walletAddress : ''
+    }
+
+    this.state.walletAddress = '';
+  }
+  onSubmit(e){
+    e.preventDefault()
+    if (!this.walletStore.checkAddress(this.state.walletAddress))
+    {
+      swal({
+        content: generateElementWithMessage(`${this.state.walletAddress} is not correct wallet address`),
+        icon: "error",
+      })
+    }
+    else {
+      this.props.history.push('/create')
+    }
+  }
+  async onAddressChange(event) {
+    this.setState({walletAddress: event.target.value});
+  }
   render () {
     return (
       <div className="container container_bg">
@@ -18,7 +50,7 @@ export class Wallet extends React.Component {
             <div className="form-inline">
               <div className="form-inline-i form-inline-i_token-address">
                   <label htmlFor="token-address" className="label">Your wallet address</label>
-                  <input type="text" className="input" id="wallet-address"/>
+                  <input type="text" className="input" id="wallet-address" value={this.state.walletAddress} onChange={this.onAddressChange}/>
               </div>
             </div>
             <Button className="button button_next">Submit</Button>
