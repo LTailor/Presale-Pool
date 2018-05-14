@@ -9,6 +9,11 @@ class WalletStore {
   {
     return Web3Utils.isAddress(str);
   }
+
+  setAddress(address)
+  {
+    this.address = address;
+  }
 }
 
-export default new WalletStore();
+export default WalletStore;

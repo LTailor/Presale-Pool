@@ -6,12 +6,13 @@ import swal from 'sweetalert';
 import { inject, observer } from "mobx-react";
 import generateElementWithMessage from "../helpers/UIHelper";
 
-@inject("WalletStore")
+@inject("Stores")
 @observer
 export class WalletComponent extends React.Component {
   constructor(props){
     super(props);
-    this.walletStore = props.WalletStore;
+    this.walletStore = props.Stores.walletStore;
+
     this.onSubmit = this.onSubmit.bind(this);
     this.onAddressChange = this.onAddressChange.bind(this);
     this.state = {
@@ -30,7 +31,8 @@ export class WalletComponent extends React.Component {
       })
     }
     else {
-      this.props.history.push('/create')
+      this.walletStore.setAddress(this.state.walletAddress)
+      this.props.history.push('/pool/create')
     }
   }
   async onAddressChange(event) {

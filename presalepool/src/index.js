@@ -3,10 +3,10 @@ import ReactDOM from 'react-dom';
 import { App } from './App';
 import { HashRouter } from 'react-router-dom';
 import { Provider } from "mobx-react";
-import WalletStore from "./stores/WalletStore";
+import Store from "./stores/Store";
 
 const Root = (
-  <Provider WalletStore={WalletStore}>
+  <Provider Stores={Store}>
     <HashRouter>
         <App />
         </HashRouter>
