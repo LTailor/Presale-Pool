@@ -1,8 +1,9 @@
 import Web3Utils from 'web3-utils';
+import { action, observable } from "mobx";
 
 class WalletStore {
+  @observable address = '';
   constructor() {
-
   }
 
   checkAddress(str)
@@ -12,7 +13,7 @@ class WalletStore {
 
   setAddress(address)
   {
-    this.address = address;
+    this.walletAddress = address;
   }
 }
 

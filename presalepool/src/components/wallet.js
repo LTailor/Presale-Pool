@@ -12,7 +12,6 @@ export class WalletComponent extends React.Component {
   constructor(props){
     super(props);
     this.walletStore = props.Stores.walletStore;
-
     this.onSubmit = this.onSubmit.bind(this);
     this.onAddressChange = this.onAddressChange.bind(this);
     this.state = {

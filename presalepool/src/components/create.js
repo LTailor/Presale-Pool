@@ -5,11 +5,14 @@ import Button from 'react-validation/build/button';
 import { inject, observer } from "mobx-react";
 
 @inject("Stores")
+@inject("PresalePoolService")
 @observer
 export class CreateComponent extends React.Component {
   constructor(props){
     super(props);
     this.walletStore = props.Stores.walletStore;
+    this.presalePoolService = props.PresalePoolService;
+
     this.onSubmit = this.onSubmit.bind(this);
     this.onInputValueChange = this.onInputValueChange.bind(this);
 
@@ -25,7 +28,8 @@ export class CreateComponent extends React.Component {
     this.state.walletAddress = '';
   }
   onSubmit(e){
-    e.preventDefault()
+    this.presalePoolService.init(this.walletStore, undefined);
+    e.preventDefault();
 
   }
   onInputValueChange(event) {

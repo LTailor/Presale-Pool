@@ -12,7 +12,13 @@
     "react-scripts": "1.1.4",
     "react-validation": "^3.0.7",
     "sweetalert": "^2.1.0",
-    "web3-utils": "^1.0.0-beta.34"
+    "web3": "^1.0.0-beta.33",
+    "web3-core": "^1.0.0-beta.33",
+    "web3-core-requestmanager": "^1.0.0-beta.33",
+    "web3-eth-abi": "^1.0.0-beta.33",
+    "web3-eth-accounts": "^1.0.0-beta.33",
+    "web3-eth-contract": "^1.0.0-beta.33",
+    "web3-eth-personal": "^1.0.0-beta.33"
   },
   "scripts": {
     "build-css": "node-sass-chokidar src/assets/stylesheets/application.scss -o src/assets/stylesheets --output-style=compressed",

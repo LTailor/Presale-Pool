@@ -1,6 +1,6 @@
 class PoolSettingsStore {
   constructor() {
-
+    
   }
 }
 
