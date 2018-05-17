@@ -1,11 +1,12 @@
 import proxyAbi from "../abis/PresalePoolProxy.json"
+import presalePoolAbi from "../abis/PresalePool.json"
 import Web3 from 'web3'
 import getWeb3 from './getWeb3';
 const abi = require('web3-eth-abi');
 
 class PresalePoolService {
 
-  presalePoolProxyAddress = "0x846b2d01ff79ae034d7ce4d639de32ca09933e37";
+  presalePoolProxyAddress = "0x2125ecf1f163d52f472adc107ba1cc27ba109f5f";
   constructor() {
     this.getWeb3Promise = getWeb3().then(async (web3Config) => {
       const {web3Instance, defaultAccount, trustApiName} = web3Config;
@@ -14,23 +15,12 @@ class PresalePoolService {
     });
   }
 
-  function getMethodCallData(methodName, parametersDescription, parameters )
-  {
-    return abi.encodeFunctionCall({
-      name: methodName,
-      type: 'function',
-      inputs: parametersDescription
-    }, parameters);
-  }
-
   init(walletSettings, poolSettings)
   {
     this.walletSettings = walletSettings
     this.poolSettings = poolSettings
     this.poolProxy = new this.web3.eth.Contract(proxyAbi, this.presalePoolProxyAddress)
-    var event = this.poolProxy.events.PresalePoolContractCreated({}, {}, function(error, event){ console.log(error); });
-
-    this.poolProxy.methods.init(walletSettings.walletAddress, walletSettings.walletAddress)
+    this.poolProxy.methods.init(poolSettings.admins, walletSettings.walletAddress)
     .send({
       from: this.defaultAccount,
       gasPrice: 1000,
@@ -38,12 +28,26 @@ class PresalePoolService {
     })
     .on('transactionHash', (hash) => {
       console.log(hash);
+      this.poolProxy.methods.getPresalePoolAddress(this.defaultAccount).call({from:this.defaultAccount})
+      .then((address)=>{
+        this.presalePoolAddress = address;
+        this.presalePool = new this.web3.eth.Contract(presalePoolAbi, this.presalePoolAddress);
+        this.presalePool.methods.setPresaleSettings(0, 0, this.poolSettings.minContribution, this.poolSettings.maxContribution)
+        .send({
+          from: this.defaultAccount,
+          gasPrice: 1000,
+          gas: 4600000
+        }
+        )
+        .on('transactionHash', (hash) => {
+          console.log(hash);
+        })
+      });
     })
     .on('error', (error) => {
       console.log(error);
     });
   }
-
 }
 
 export default new PresalePoolService;

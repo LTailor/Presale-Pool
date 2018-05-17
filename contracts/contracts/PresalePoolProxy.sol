@@ -2,18 +2,18 @@ import './PresalePool.sol';
 
 contract PresalePoolProxy
 {
-  event PresalePoolContractCreated(string id, address c);
-
-  function init(string id,address wallet) public
+  mapping (address => address) public presalePoolAddress;
+  address distributionWallet = 0x0612640F0557C41aA2b31cB27F982DF8c63001eE;
+  function init(address[] admins, address wallet) public
   {
     PresalePool presalePool = new PresalePool();
-    emit PresalePoolContractCreated(id, presalePool);
+    presalePool.init(admins, distributionWallet, wallet);
+    presalePoolAddress[msg.sender] = presalePool;
+    presalePool.setNewOwner(msg.sender);
   }
 
-  function callPresaleMethod(address destination, bytes data) external {
-      require(
-          destination.call.gas(msg.gas).value(msg.value)(data)
-      );
+  function getPresalePoolAddress(address creatorWallet) view external returns(address)
+  {
+    return presalePoolAddress[creatorWallet];
   }
-
 }

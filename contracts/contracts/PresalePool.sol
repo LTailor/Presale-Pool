@@ -119,6 +119,11 @@ contract PresalePool {
     }
   }
 
+  function setNewOwner(address _owner) external onlyOwner
+  {
+    owner = _owner;
+  }
+
   function addAdmin(address admin) internal
   {
     participantsInfo[admin].admin = true;

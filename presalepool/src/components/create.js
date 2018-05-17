@@ -11,6 +11,7 @@ export class CreateComponent extends React.Component {
   constructor(props){
     super(props);
     this.walletStore = props.Stores.walletStore;
+    this.presalePoolSettings = props.Stores.poolSettingsStore;
     this.presalePoolService = props.PresalePoolService;
 
     this.onSubmit = this.onSubmit.bind(this);
@@ -28,7 +29,9 @@ export class CreateComponent extends React.Component {
     this.state.walletAddress = '';
   }
   onSubmit(e){
-    this.presalePoolService.init(this.walletStore, undefined);
+    this.presalePoolSettings.setAdmins([this.state.adminWallet1, this.state.adminWallet2, this.state.adminWallet3]);
+    this.presalePoolSettings.setSettings(this.state.maxAllocation, this.state.maxPerContributor, this.state.minPerContributor);
+    this.presalePoolService.init(this.walletStore, this.presalePoolSettings);
     e.preventDefault();
 
   }
@@ -87,6 +90,40 @@ export class CreateComponent extends React.Component {
               <label htmlFor="token-address" className="label">Admin 3 Wallet Address</label>
               <input type="text" className="input" id="adminWallet3" value={this.state.adminWallet3} onChange ={this.onInputValueChange}/>
             </div>
+
+            <h5 className="header-2"><strong>Whitelist</strong></h5>
+            <div className="form-inline">
+            <p className="description">
+            You may decide whether to enforce a whitelist, in which case only
+            contributors on the list may contribute in your pool. If you click Yes, you
+            will specify the addresses after launch. Read more about whitelist gas
+            prices in our FAQ.
+            </p>
+            </div>
+
+            <h5 className="header-2"><strong>Fees</strong></h5>
+            <div className="form-inline">
+            <p className="description">
+            You may charge your contributors a fee for the hard work and value
+            that you bring to them. PrimaBlock’s fee is fixed at 0,5%
+            </p>
+            </div>
+            <div className="form-inline-i form-inline-i_token-address">
+              <label htmlFor="token-address" className="label">Pool Percentage</label>
+              <input type="text" className="input" id="adminWallet3" value={this.state.adminWallet3} onChange ={this.onInputValueChange}/>
+            </div>
+
+            <h5 className="header-2"><strong>Token Distribution</strong></h5>
+            <div className="form-inline">
+            <p className="description">
+            You can elect to have PrimaBlock automatically distribute tokens to the
+            contributors of your pool. Otherwise, each of your contributors will
+            have to claim their tokens from the pool by clicking on the
+            'GET MY TOKENS' button.
+            </p>
+            </div>
+
+
             <Button className="button button_next">Submit</Button>
           </Form>
 

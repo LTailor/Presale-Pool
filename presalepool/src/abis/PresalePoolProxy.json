@@ -1,28 +1,29 @@
 [
 	{
-		"constant": false,
+		"constant": true,
 		"inputs": [
 			{
-				"name": "destination",
+				"name": "creatorWallet",
 				"type": "address"
-			},
-			{
-				"name": "data",
-				"type": "bytes"
 			}
 		],
-		"name": "callPresaleMethod",
-		"outputs": [],
+		"name": "getPresalePoolAddress",
+		"outputs": [
+			{
+				"name": "",
+				"type": "address"
+			}
+		],
 		"payable": false,
-		"stateMutability": "nonpayable",
+		"stateMutability": "view",
 		"type": "function"
 	},
 	{
 		"constant": false,
 		"inputs": [
 			{
-				"name": "id",
-				"type": "string"
+				"name": "admins",
+				"type": "address[]"
 			},
 			{
 				"name": "wallet",
@@ -36,20 +37,22 @@
 		"type": "function"
 	},
 	{
-		"anonymous": false,
+		"constant": true,
 		"inputs": [
 			{
-				"indexed": false,
-				"name": "id",
-				"type": "string"
-			},
-			{
-				"indexed": false,
-				"name": "c",
+				"name": "",
 				"type": "address"
 			}
 		],
-		"name": "PresalePoolContractCreated",
-		"type": "event"
+		"name": "presalePoolAddress",
+		"outputs": [
+			{
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
 	}
 ]
