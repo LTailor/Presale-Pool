@@ -6,7 +6,6 @@ import { inject, observer } from "mobx-react";
 
 @inject("Stores")
 @inject("PresalePoolService")
-@observer
 export class CreateComponent extends React.Component {
   constructor(props){
     super(props);
@@ -23,17 +22,17 @@ export class CreateComponent extends React.Component {
       minPerContributor: '',
       adminWallet1: '',
       adminWallet2: '',
-      adminWallet3: ''
+      adminWallet3: '',
+      feePercentage: 0
     }
 
     this.state.walletAddress = '';
   }
   onSubmit(e){
     this.presalePoolSettings.setAdmins([this.state.adminWallet1, this.state.adminWallet2, this.state.adminWallet3]);
-    this.presalePoolSettings.setSettings(this.state.maxAllocation, this.state.maxPerContributor, this.state.minPerContributor);
-    this.presalePoolService.init(this.walletStore, this.presalePoolSettings);
+    this.presalePoolSettings.setSettings(this.state.maxAllocation, this.state.maxPerContributor, this.state.minPerContributor, this.state.feePercentage);
+    this.presalePoolService.createPool(this.walletStore, this.presalePoolSettings);
     e.preventDefault();
-
   }
   onInputValueChange(event) {
     let stateChange = {}
@@ -110,7 +109,7 @@ export class CreateComponent extends React.Component {
             </div>
             <div className="form-inline-i form-inline-i_token-address">
               <label htmlFor="token-address" className="label">Pool Percentage</label>
-              <input type="text" className="input" id="adminWallet3" value={this.state.adminWallet3} onChange ={this.onInputValueChange}/>
+              <input type="text" className="input" id="feePercentage" value={this.state.feePercentage} onChange ={this.onInputValueChange}/>
             </div>
 
             <h5 className="header-2"><strong>Token Distribution</strong></h5>

@@ -132,6 +132,48 @@
   text-align: left;
   color: #ffffff;
 }
+.progressbar-progress {
+  width: 606px;
+  height: 8px;
+  opacity: 0.2;
+  border-radius: 4px;
+  background-color: #10b3ff;
+}
+.walletAddress {
+  width: 580px;
+  height: 17px;
+  font-family: Lato;
+  font-size: 24px;
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: 3;
+  letter-spacing: normal;
+  text-align: left;
+  color: #9cd8ff;
+}
+
+.contributeEther  {
+  width: 161px;
+  height: 40px;
+  border-radius: 20px;
+  background-color: #10b3ff;
+  box-shadow: 0px 10px 20px 0 rgba(16, 179, 255, 0.3);
+}
+.contributeEther p
+{
+  width: 122px;
+  height: 1px;
+  font-family: Lato;
+  font-size: 16px;
+  font-weight: bold;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: 4.5;
+  letter-spacing: normal;
+  text-align: left;
+  color: #ffffff;
+}
 .headerLink {
   width: 51px;
   height: 12px;

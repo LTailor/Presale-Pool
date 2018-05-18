@@ -3,11 +3,12 @@ class PoolSettingsStore {
 
   }
 
-  setSettings(maxAllocation, maxContribution, minContribution)
+  setSettings(maxAllocation, maxContribution, minContribution, fee)
   {
     this.maxAllocation = maxAllocation;
     this.maxContribution = maxContribution;
     this.minContribution = minContribution;
+    this.feePercentage = fee
   }
 
   setAdmins(admins)

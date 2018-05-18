@@ -69,6 +69,7 @@ contract PresalePool {
     PresaleState state;
     uint minContribution;
     uint maxContribution;
+    uint maxAllocation;
     uint startDate;
     uint endDate;
   }
@@ -209,12 +210,18 @@ contract PresalePool {
     return fee;
   }
 
-  function setPresaleSettings(uint _startDate, uint _endDate, uint _minContribution, uint _maxContribution) onlyAdmin
+  function setPresaleSettings(uint _startDate, uint _endDate, uint _minContribution, uint _maxContribution, uint _maxAllocation) onlyAdmin
   {
     presaleInfo.startDate = _startDate;
     presaleInfo.endDate = _endDate;
     presaleInfo.minContribution = _minContribution;
     presaleInfo.maxContribution = _maxContribution;
+    presaleInfo.maxAllocation = _maxAllocation;
+  }
+
+  function getPresaleSettings() external view returns(uint, uint, uint)
+  {
+    return (presaleInfo.minContribution, presaleInfo.maxContribution, presaleInfo.maxAllocation);
   }
 
   function setTokenRate(uint rate, uint decimals) external onlyAdmin

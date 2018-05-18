@@ -5,9 +5,10 @@ import { HashRouter } from 'react-router-dom';
 import { Provider } from "mobx-react";
 import Store from "./stores/Store";
 import PresalePoolService from "./services/presalePoolService";
+import ContributorService from "./services/contributorService";
 
 const Root = (
-  <Provider Stores={Store} PresalePoolService = {PresalePoolService}>
+  <Provider Stores={Store} PresalePoolService = {PresalePoolService} ContributorService = {ContributorService}>
     <HashRouter>
         <App />
         </HashRouter>
