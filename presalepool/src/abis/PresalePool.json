@@ -63,6 +63,10 @@
 			{
 				"name": "_maxContribution",
 				"type": "uint256"
+			},
+			{
+				"name": "_maxAllocation",
+				"type": "uint256"
 			}
 		],
 		"name": "setPresaleSettings",
@@ -253,8 +257,26 @@
 	{
 		"constant": true,
 		"inputs": [],
+		"name": "getPoolFeePerEther",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
 		"name": "getPresaleSettings",
 		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			},
 			{
 				"name": "",
 				"type": "uint256"

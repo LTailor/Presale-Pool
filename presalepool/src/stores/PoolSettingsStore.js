@@ -1,4 +1,6 @@
+import { action, observable } from "mobx"
 class PoolSettingsStore {
+  @observable presalePoolAddress = ''
   constructor() {
 
   }

@@ -242,6 +242,11 @@ contract PresalePool {
     emit PoolFeeSetted(fee);
   }
 
+  function getPoolFeePerEther() external view returns(uint)
+  {
+    return feePerEtherPool;
+  }
+
   function sendFeeToTeam() external onlyOwner
   {
     distributionWallet.transfer(calculateTeamValueFee(contributionBalance));

@@ -7,7 +7,7 @@ const abi = require('web3-eth-abi');
 
 class PresalePoolService {
 
-  presalePoolProxyAddress = "0x462892bea14c8f7b15cf19c37ee249a755d83118";
+  presalePoolProxyAddress = "0xe1b18de7c333121bfd7802b3007ba651ed68021d";
   constructor() {
     this.getWeb3Promise = getWeb3().then(async (web3Config) => {
       const {web3Instance, defaultAccount, trustApiName} = web3Config;
@@ -29,14 +29,15 @@ class PresalePoolService {
     })
     .on('transactionHash', (hash) => {
       console.log(hash);
-      this.poolProxy.methods.getPresalePoolAddress(this.defaultAccount).call({from:this.defaultAccount})
+      this.poolProxy.methods.getPresalePoolAddress(this.defaultAccount).call({from:walletSettings.walletAddress})
       .then((address)=>{
         console.log(address)
+        this.poolSettings.presalePoolAddress = address
         this.presalePoolAddress = address
         this.presalePool = new this.web3.eth.Contract(presalePoolAbi, this.presalePoolAddress)
-        this.presalePool.methods.setPresaleSettings(0, 0, this.poolSettings.minContribution, this.poolSettings.maxContribution)
+        this.presalePool.methods.setPresaleSettings(0, 0, this.poolSettings.minContribution, this.poolSettings.maxContribution, this.poolSettings.maxAllocation)
         .send({
-          from: this.defaultAccount,
+          from: walletSettings.walletAddress,
           gasPrice: 1000,
           gas: 4600000
         }

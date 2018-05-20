@@ -64,13 +64,14 @@ strong {
 
 .container {
   @extend %container;
-
+  display: flex;
   &_bg {
     padding-bottom: 60px;
 
     &:before {
       @include image-2x('../images/illustration@2x.png');
       content: '';
+      opacity: 0.2;
       position: absolute;
       right: -120px;
       top: 10px;
@@ -91,6 +92,19 @@ strong {
   }
 }
 
+.half-content
+{
+  width: 200px;
+  margin-right: 20px;
+}
+.dashboard-contribtuion-info
+{
+  width:70%;
+}
+.form-content
+{
+  display: flex;
+}
 .content {
   position: relative;
   z-index: 1;
