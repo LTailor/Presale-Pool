@@ -16,6 +16,7 @@ class ContributorService {
   @observable contributionInEther = 0
   @observable maxAllocation = 0
   @observable poolFee = 0
+  @observable poolValue;
 
   constructor() {
 
@@ -25,7 +26,7 @@ class ContributorService {
   {
     this.getWeb3Promise = getWeb3().then(async (web3Config) => {
 
-      const {web3Instance, defaultAccount, trustApiName} = web3Config
+      const {web3Instance, defaultAccount} = web3Config
       this.contributorAddress = defaultAccount
       this.web3 = new Web3(web3Instance.currentProvider)
       this.presalePool = new this.web3.eth.Contract(presalePoolAbi, smartContractAddress)
@@ -47,6 +48,12 @@ class ContributorService {
       .call({
         from: this.contributorAddress
       })
+
+      this.poolValue = await this.presalePool.methods.getPoolValue()
+      .call({
+        from: this.contributorAddress
+      });
+
 
       this.contribution = mySum
       this.contributionInEther = this.web3.utils.fromWei(mySum, 'ether');
@@ -72,6 +79,7 @@ class ContributorService {
       gasPrice: 1000,
       gas: 4600000
     })
+    .on('error', error => console.log(error))
   }
 }
 

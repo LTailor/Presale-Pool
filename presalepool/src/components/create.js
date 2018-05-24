@@ -2,7 +2,10 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import Form from 'react-validation/build/form';
 import Button from 'react-validation/build/button';
+import Textarea from 'react-validation/build/textarea';
+import Input from 'react-validation/build/input';
 import { inject, observer } from "mobx-react";
+import { required, isAddress, isPercentage} from "./validators"
 import swal from 'sweetalert';
 import generateElementWithMessage from "../helpers/UIHelper";
 import Web3Utils from 'web3-utils'
@@ -12,13 +15,14 @@ import Web3Utils from 'web3-utils'
 @observer
 export class CreateComponent extends React.Component {
   constructor(props){
-    super(props);
-    this.walletStore = props.Stores.walletStore;
-    this.presalePoolSettings = props.Stores.poolSettingsStore;
-    this.presalePoolService = props.PresalePoolService;
+    super(props)
+    this.walletStore = props.Stores.walletStore
+    this.presalePoolSettings = props.Stores.poolSettingsStore
+    this.presalePoolService = props.PresalePoolService
 
-    this.onSubmit = this.onSubmit.bind(this);
-    this.onInputValueChange = this.onInputValueChange.bind(this);
+    this.onSubmit = this.onSubmit.bind(this)
+    this.onInputValueChange = this.onInputValueChange.bind(this)
+    this.onWhitelistChange = this.onWhitelistChange.bind(this)
 
     this.state = {
       maxAllocation : '',
@@ -27,17 +31,25 @@ export class CreateComponent extends React.Component {
       adminWallet1: '',
       adminWallet2: '',
       adminWallet3: '',
-      feePercentage: 0
+      feePercentage: 0,
+      whitelistAddresses: []
     }
 
-    this.state.walletAddress = '';
+    this.state.walletAddress = ''
   }
   onSubmit(e){
     this.presalePoolSettings.setAdmins([this.state.adminWallet1, this.state.adminWallet2, this.state.adminWallet3]);
     this.presalePoolSettings.setSettings(Web3Utils.toWei(this.state.maxAllocation), Web3Utils.toWei(this.state.maxPerContributor), Web3Utils.toWei(this.state.minPerContributor), this.state.feePercentage);
+    this.presalePoolSettings.setWhitelist(this.state.whitelistAddresses)
     this.presalePoolService.createPool(this.walletStore, this.presalePoolSettings);
-
     e.preventDefault();
+  }
+  onWhitelistChange(e){
+    const addresses = e.target.value.split(',')
+    if(addresses!='undefined' && addresses.length!=0)
+    {
+      this.state.whitelistAddresses = addresses.filter(w => typeof(w)!='undefined')
+    }
   }
   onInputValueChange(event) {
     let stateChange = {}
@@ -53,8 +65,6 @@ export class CreateComponent extends React.Component {
           <Form className="form" onSubmit={this.onSubmit}>
           <div className="form-content">
           <div className="content">
-          <label htmlFor="token-address" className="label">Presale Pool Address</label>
-          <label htmlFor="network" className="walletAddress">{this.presalePoolSettings.presalePoolAddress}</label>
             <h5 className="header-2"><strong>Allocation</strong></h5>
             <div className="form-inline">
             <p className="description">
@@ -65,17 +75,17 @@ export class CreateComponent extends React.Component {
             </div>
             <div className="form-inline-i form-inline-i_token-address">
               <label htmlFor="token-address" className="label">Maximum Allocation (ETH)</label>
-              <input type="text" className="input" id="maxAllocation" value={this.state.maxAllocation} onChange ={this.onInputValueChange}/>
+              <Input type="number" className="input" id="maxAllocation" value={this.state.maxAllocation} onChange ={this.onInputValueChange} validations={[required]}/>
             </div>
             <div className="form-inline-i form-inline-i_token-address">
             <div className="Ether-input">
               <div className="half-content">
               <label htmlFor="max-contrib" className="Maximum-Per-Contributor-ETH">Maximum Per Contributor (ETH)</label>
-              <input type="text" className="input" id="maxPerContributor" value={this.state.maxPerContributor} onChange ={this.onInputValueChange}/>
+              <Input type="number" className="input" id="maxPerContributor" value={this.state.maxPerContributor} onChange ={this.onInputValueChange} validations={[required]}/>
               </div>
               <div className="half-content">
               <label htmlFor="min-contrib" className="Maximum-Per-Contributor-ETH">Minimum Per Contributor (ETH)</label>
-              <input type="text" className="input" id="minPerContributor" value={this.state.minPerContributor} onChange ={this.onInputValueChange}/>
+              <Input type="number" className="input" id="minPerContributor" value={this.state.minPerContributor} onChange ={this.onInputValueChange} validations={[required]}/>
               </div>
             </div>
             </div>
@@ -89,15 +99,15 @@ export class CreateComponent extends React.Component {
             </div>
             <div className="form-inline-i form-inline-i_token-address">
               <label htmlFor="token-address" className="label">Admin 1 Wallet Address</label>
-              <input type="text" className="input" id="adminWallet1" value={this.state.adminWallet1} onChange ={this.onInputValueChange}/>
+              <Input className="input" id="adminWallet1" value={this.state.adminWallet1} onChange ={this.onInputValueChange} validations={[isAddress]}/>
             </div>
             <div className="form-inline-i form-inline-i_token-address">
               <label htmlFor="token-address" className="label">Admin 2 Wallet Address</label>
-              <input type="text" className="input" id="adminWallet2" value={this.state.adminWallet2} onChange ={this.onInputValueChange}/>
+              <Input className="input" id="adminWallet2" value={this.state.adminWallet2} onChange ={this.onInputValueChange} validations={[isAddress]}/>
             </div>
             <div className="form-inline-i form-inline-i_token-address">
               <label htmlFor="token-address" className="label">Admin 3 Wallet Address</label>
-              <input type="text" className="input" id="adminWallet3" value={this.state.adminWallet3} onChange ={this.onInputValueChange}/>
+              <Input className="input" id="adminWallet3" value={this.state.adminWallet3} onChange ={this.onInputValueChange} validations={[isAddress]}/>
             </div>
             </div>
             <div className="content">
@@ -110,6 +120,12 @@ export class CreateComponent extends React.Component {
             prices in our FAQ.
             </p>
             </div>
+            <div className="form-inline">
+            <Textarea
+              data-gram
+              className="textarea"
+              onChange={this.onWhitelistChange} className="textarea"></Textarea>
+            </div>
 
             <h5 className="header-2"><strong>Fees</strong></h5>
             <div className="form-inline">
@@ -120,7 +136,7 @@ export class CreateComponent extends React.Component {
             </div>
             <div className="form-inline-i form-inline-i_token-address">
               <label htmlFor="token-address" className="label">Pool Percentage</label>
-              <input type="text" className="input" id="feePercentage" value={this.state.feePercentage} onChange ={this.onInputValueChange}/>
+              <Input type="number" className="input" id="feePercentage" value={this.state.feePercentage} onChange ={this.onInputValueChange} validations={[required, isPercentage]}/>
             </div>
 
             <h5 className="header-2"><strong>Token Distribution</strong></h5>
@@ -132,12 +148,12 @@ export class CreateComponent extends React.Component {
             'GET MY TOKENS' button.
             </p>
             </div>
-
+            <label htmlFor="token-address" className="label">Presale Pool Address</label>
+            <label htmlFor="network" className="walletAddress">{this.presalePoolSettings.presalePoolAddress}</label>
             <Button className="button button_next">Submit</Button>
             </div>
             </div>
           </Form>
-
         </div>
       </div>
     );

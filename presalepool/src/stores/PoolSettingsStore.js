@@ -1,6 +1,10 @@
 import { action, observable } from "mobx"
 class PoolSettingsStore {
   @observable presalePoolAddress = ''
+  @observable maxAllocation = 0
+  @observable maxContribution = 0
+  @observable minContribtuion = 0
+  @observable feePercentage = 0
   constructor() {
 
   }
@@ -16,6 +20,11 @@ class PoolSettingsStore {
   setAdmins(admins)
   {
     this.admins = admins.filter( a => typeof(a) != 'undefined' && a!='');
+  }
+
+  setWhitelist(addresses)
+  {
+    this.whitelist = addresses
   }
 }
 

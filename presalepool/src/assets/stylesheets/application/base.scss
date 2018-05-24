@@ -105,6 +105,41 @@ strong {
 {
   display: flex;
 }
+
+.content-r
+{
+  width: 1px;
+  height: 708px;
+  background-color: #326486;
+  margin-left: 30px;
+  margin-right: 30px;
+}
+.content-70 {
+  position: relative;
+  z-index: 1;
+  width: 60%;
+
+  .container_opacity & {
+    width: 100%;
+  }
+
+  @media (max-width: $container-responsive--width) {
+    width: 100%;
+  }
+}
+.content-30 {
+  position: relative;
+  z-index: 1;
+  width: 40%;
+
+  .container_opacity & {
+    width: 100%;
+  }
+
+  @media (max-width: $container-responsive--width) {
+    width: 100%;
+  }
+}
 .content {
   position: relative;
   z-index: 1;

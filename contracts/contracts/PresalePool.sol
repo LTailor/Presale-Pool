@@ -98,7 +98,7 @@ contract PresalePool {
   address public poolDistributionWallet;
   uint public exchangeRate;
   uint private tokenDecimals;
-  uint contributionBalance;
+  uint public contributionBalance;
   uint feePerEtherTeam;
   uint feePerEtherPool;
   uint totalTeamFee;
@@ -143,9 +143,9 @@ contract PresalePool {
 
   function withdrawContribution() whenOpened external
   {
-    Participant memory participant = participantsInfo[msg.sender];
+    Participant storage participant = participantsInfo[msg.sender];
     contributionBalance = contributionBalance.sub(participant.sum);
-    require(msg.sender.call.value(participant.sum)());
+    msg.sender.transfer(participant.sum);
 
     emit ParticipantWithdrawed(msg.sender, participant.sum);
     participant.sum = 0;
@@ -159,6 +159,11 @@ contract PresalePool {
     }
   }
 
+  function getPoolValue() external view returns(uint)
+  {
+    return contributionBalance;
+  }
+  
   function sendContribution(address token, uint gasLimit, bytes data) external onlyAdmin whenClosed
   {
     uint fee = calculateTotalValueFee(contributionBalance);
@@ -255,6 +260,15 @@ contract PresalePool {
   function sendFeeToPoolAdmin() external onlyAdmin
   {
     poolDistributionWallet.transfer(calculatePoolValueFee(contributionBalance));
+  }
+
+  function addAddressesToWhitelist(address[] participants) external onlyAdmin
+  {
+    for (uint i=0;i<participants.length;i++)
+    {
+      Participant storage participantInfo = participantsInfo[participants[i]];
+      participantInfo.isWhitelisted = true;
+    }
   }
 
   function addToWhitelist(address participant) external onlyAdmin

@@ -32,7 +32,7 @@
   }
 }
 .form {
-  
+
   span.error {
     margin-left: 10px;
     color: #fd7491;
@@ -109,6 +109,30 @@
   padding: 10px 20px;
 }
 
+
+
+.withdraw_button  {
+  width: 155px;
+  height: 40px;
+  border-radius: 20px;
+  background-color: #ffffff;
+  box-shadow: 0px 10px 20px 0 rgba(16, 179, 255, 0.3);
+}
+
+.withdraw_button p {
+  width: 155px;
+  height: 11px;
+  font-family: Lato;
+  font-size: 16px;
+  font-weight: bold;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: 4.5;
+  letter-spacing: normal;
+  text-align: left;
+  color: #10b3ff;
+}
+
 .label {
   @extend %control-font;
   display: block;
@@ -162,6 +186,7 @@
   opacity: 0.2;
   border-radius: 4px;
   background-color: #10b3ff;
+  margin-bottom: 20px;
 }
 .walletAddress {
   width: 580px;
@@ -243,7 +268,6 @@
   &:hover {
     box-shadow: 0px 10px 20px 0 fade-out(#10b3ff, 0.7);
   }
-
   &_next {
     margin-top: 20px;
     padding-right: 45px;
@@ -251,7 +275,22 @@
     background-size: 15px 10px;
     background-position: center right 20px;
   }
-
+  &_contrib {
+    width: 161px;
+    height: 40px;
+    border-radius: 20px;
+    background-color: #10b3ff;
+    box-shadow: 0px 10px 20px 0 rgba(16, 179, 255, 0.3);
+    margin-bottom: 20px;
+  }
+  &_withdraw {
+    width: 161px;
+    height: 40px;
+    border-radius: 20px;
+    background-color: #10b3ff;
+    box-shadow: 0px 10px 20px 0 rgba(16, 179, 255, 0.3);
+    margin-bottom: 20px;
+  }
   &_add {
     width: 40px;
     height: 40px;
