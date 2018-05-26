@@ -32,7 +32,8 @@ contract('PresalePool', function(accounts) {
     before(async () => {
         presaleContract = await PresalePool.new();
         testToken = await TestToken.new();
-        presaleContract.init([admin], distWallet, poolWallet, {from: owner})
+        await presaleContract.init([admin], distWallet, poolWallet, {from: owner})
+        await presaleContract.setPresaleSettings(0, 0, 2*ETHER, ETHER * 10, ETHER * 30, {from: admin});
     });
 
     it('Pool and team fees are being setted correctly', async () => {

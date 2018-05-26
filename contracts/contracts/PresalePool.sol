@@ -79,6 +79,8 @@ contract PresalePool {
     bool admin;
     bool isWhitelisted;
     uint sum;
+    bool gotTokens;
+    uint realValue;
   }
 
   event AddedToWhiteList(address participant);
@@ -96,6 +98,9 @@ contract PresalePool {
   address public owner;
   address public distributionWallet;
   address public poolDistributionWallet;
+  address[] participants;
+  address[] admins;
+
   uint public exchangeRate;
   uint private tokenDecimals;
   uint public contributionBalance;
@@ -117,6 +122,7 @@ contract PresalePool {
 
     for (uint i = 0; i < _admins.length; i++) {
         addAdmin(_admins[i]);
+        admins.push(_admins[i]);
     }
   }
 
@@ -131,12 +137,24 @@ contract PresalePool {
     participantsInfo[admin].isWhitelisted = true;
   }
 
+  function getAdmins() external view returns(address[])
+  {
+    return admins;
+  }
+
   function contribute() onlyWhitelisted whenOpened payable onlyInDate external
   {
-    checkContribution(msg.value);
     Participant storage participant = participantsInfo[msg.sender];
-    participant.sum = participant.sum.add(msg.value);
-    contributionBalance = contributionBalance.add(msg.value);
+    require(participant.realValue.add(msg.value) <= presaleInfo.maxContribution);
+
+    participant.realValue = participant.realValue.add(msg.value);
+    if (participant.realValue >= presaleInfo.minContribution)
+    {
+      contributionBalance = contributionBalance.sub(participant.sum);
+      participant.sum = participant.realValue;
+      contributionBalance = contributionBalance.add(participant.sum);
+      require(contributionBalance <= presaleInfo.maxAllocation);
+    }
 
     emit ParticipateContributed(msg.sender);
   }
@@ -144,41 +162,43 @@ contract PresalePool {
   function withdrawContribution() whenOpened external
   {
     Participant storage participant = participantsInfo[msg.sender];
-    contributionBalance = contributionBalance.sub(participant.sum);
-    msg.sender.transfer(participant.sum);
+    uint transferSum =  participant.realValue;
+    participant.realValue = 0;
+    if (participant.sum != 0)
+    {
+      contributionBalance = contributionBalance.sub(participant.sum);
+      participant.sum = 0;
+    }
+
+    msg.sender.transfer(transferSum);
 
     emit ParticipantWithdrawed(msg.sender, participant.sum);
-    participant.sum = 0;
-  }
 
-  function checkContribution(uint value) internal view
-  {
-    if (presaleInfo.minContribution != 0 && presaleInfo.maxContribution !=0 )
-    {
-      require(value >= presaleInfo.minContribution && value <= presaleInfo.maxContribution);
-    }
   }
 
   function getPoolValue() external view returns(uint)
   {
     return contributionBalance;
   }
-  
+
   function sendContribution(address token, uint gasLimit, bytes data) external onlyAdmin whenClosed
   {
+    require (presaleInfo.state != PresaleState.Paid);
+    presaleInfo.state = PresaleState.Paid;
     uint fee = calculateTotalValueFee(contributionBalance);
     uint gas = (gasLimit > 0) ? gasLimit : gasleft();
     require(
         token.call.gas(gas).value(contributionBalance - fee)(data)
     );
 
-    presaleInfo.state = PresaleState.Paid;
-
     emit Paid(contributionBalance.sub(fee));
   }
 
-  function getTokens(address tokenAddress) external
+  function getTokens(address tokenAddress) whenTransfered external
   {
+    require (!participantsInfo[msg.sender].gotTokens);
+    participantsInfo[msg.sender].gotTokens = true;
+
     uint reward = calculateParticipantTokens(msg.sender);
     ERC20 token = ERC20(tokenAddress);
 
@@ -217,11 +237,70 @@ contract PresalePool {
 
   function setPresaleSettings(uint _startDate, uint _endDate, uint _minContribution, uint _maxContribution, uint _maxAllocation) onlyAdmin
   {
+    require(_minContribution < _maxContribution);
+
     presaleInfo.startDate = _startDate;
     presaleInfo.endDate = _endDate;
-    presaleInfo.minContribution = _minContribution;
+
+    if( _minContribution < presaleInfo.minContribution)
+    {
+      presaleInfo.minContribution = _minContribution;
+      rebalanceContributionsDecreaseMin();
+    }
+    else if (_minContribution > presaleInfo.minContribution)
+    {
+      presaleInfo.minContribution = _minContribution;
+      rebalanceContributionsIncreaseMin();
+    }
     presaleInfo.maxContribution = _maxContribution;
+    rebalanceContributionsDecreaseMax();
     presaleInfo.maxAllocation = _maxAllocation;
+  }
+
+  function rebalanceContributionsIncreaseMin() internal
+  {
+    for (uint i=0;i<participants.length;i++)
+    {
+      Participant storage participant = participantsInfo[participants[i]];
+      if(participant.realValue < presaleInfo.minContribution)
+      {
+        contributionBalance = contributionBalance.sub(participant.sum);
+        participant.sum = 0;
+      }
+    }
+  }
+
+  function rebalanceContributionsDecreaseMin() internal
+  {
+    for (uint i=0;i<participants.length;i++)
+    {
+      Participant storage participant = participantsInfo[participants[i]];
+      if(participant.realValue > presaleInfo.minContribution)
+      {
+        if (participant.sum == 0)
+        {
+          participant.sum = participant.realValue;
+          contributionBalance = contributionBalance.add(participant.sum);
+        }
+      }
+    }
+  }
+
+  function rebalanceContributionsDecreaseMax() internal
+  {
+    for (uint i=0;i<participants.length;i++)
+    {
+      Participant storage participant = participantsInfo[participants[i]];
+      if(participant.sum > presaleInfo.maxContribution)
+      {
+        uint transferSum = participant.realValue;
+        contributionBalance = contributionBalance.sub(participant.sum);
+        participant.realValue = 0;
+        participant.sum = 0;
+
+        participants[i].transfer(transferSum);
+      }
+    }
   }
 
   function getPresaleSettings() external view returns(uint, uint, uint)
@@ -235,13 +314,13 @@ contract PresalePool {
     tokenDecimals = decimals;
   }
 
-  function setTeamFeePerEther(uint fee) external onlyOwner
+  function setTeamFeePerEther(uint fee) external onlyOwner whenOpened
   {
     feePerEtherTeam = fee;
     emit TeamFeeSetted(fee);
   }
 
-  function setPoolFeePerEther(uint fee) external onlyAdmin
+  function setPoolFeePerEther(uint fee) external onlyAdmin whenOpened
   {
     feePerEtherPool = fee;
     emit PoolFeeSetted(fee);
@@ -252,21 +331,21 @@ contract PresalePool {
     return feePerEtherPool;
   }
 
-  function sendFeeToTeam() external onlyOwner
+  function sendFeeToTeam() external onlyOwner whenTransfered
   {
     distributionWallet.transfer(calculateTeamValueFee(contributionBalance));
   }
 
-  function sendFeeToPoolAdmin() external onlyAdmin
+  function sendFeeToPoolAdmin() external onlyAdmin whenTransfered
   {
     poolDistributionWallet.transfer(calculatePoolValueFee(contributionBalance));
   }
 
-  function addAddressesToWhitelist(address[] participants) external onlyAdmin
+  function addAddressesToWhitelist(address[] _participants) external onlyAdmin
   {
-    for (uint i=0;i<participants.length;i++)
+    for (uint i=0;i<_participants.length;i++)
     {
-      Participant storage participantInfo = participantsInfo[participants[i]];
+      Participant storage participantInfo = participantsInfo[_participants[i]];
       participantInfo.isWhitelisted = true;
     }
   }
@@ -275,6 +354,7 @@ contract PresalePool {
   {
     Participant storage participantInfo = participantsInfo[participant];
     participantInfo.isWhitelisted = true;
+    participants.push(participant);
 
     emit AddedToWhiteList(participant);
   }
@@ -283,6 +363,11 @@ contract PresalePool {
   {
     Participant storage participantInfo = participantsInfo[participant];
     participantInfo.isWhitelisted = false;
+  }
+
+  function getWhitelist() external view returns(address[])
+  {
+    return participants;
   }
 
   function getContributedSum() external view returns(uint)
@@ -295,14 +380,20 @@ contract PresalePool {
     return participantsInfo[msg.sender].sum.sub(calculateTotalValueFee(participantsInfo[msg.sender].sum));
   }
 
+  function getRealSum() external view returns(uint)
+  {
+    return participantsInfo[msg.sender].realValue;
+  }
+
   function setTransferedState() external onlyAdmin
   {
+    require (presaleInfo.state == PresaleState.Paid);
     presaleInfo.state = PresaleState.Transfered;
 
     emit Transfered();
   }
 
-  function close() public onlyAdmin
+  function close() public onlyAdmin whenOpened
   {
     presaleInfo.state = PresaleState.Closed;
 
