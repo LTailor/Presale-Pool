@@ -5,8 +5,9 @@ class PoolSettingsStore {
   @observable maxContribution = 0
   @observable minContribtuion = 0
   @observable feePercentage = 0
+  @observable status = 0
   constructor() {
-
+    this.admins = []
   }
 
   setSettings(maxAllocation, maxContribution, minContribution, fee)

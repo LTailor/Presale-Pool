@@ -69,6 +69,9 @@ contract('PresalePool', function(accounts) {
       expect(poolBalance.minus(poolBalanceBefore)).to.deep.equal(totalPoolFee);
 
       expect(presaleContrib).to.deep.equal(participantContribution.minus(totalTeamFee.plus(totalPoolFee)));
+
+      await presaleContract.sendFeeToTeam({from: owner}).should.be.rejectedWith(REVERT_ERR);
+      await presaleContract.sendFeeToPoolAdmin({from: admin}).should.be.rejectedWith(REVERT_ERR);
     });
   });
 });

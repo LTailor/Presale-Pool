@@ -108,6 +108,8 @@ contract PresalePool {
   uint feePerEtherPool;
   uint totalTeamFee;
   uint totalPoolFee;
+  bool teamGotFee;
+  bool adminGotFee;
 
   constructor() public
   {
@@ -333,11 +335,17 @@ contract PresalePool {
 
   function sendFeeToTeam() external onlyOwner whenTransfered
   {
+    require(!teamGotFee);
+
+    teamGotFee = true;
     distributionWallet.transfer(calculateTeamValueFee(contributionBalance));
   }
 
   function sendFeeToPoolAdmin() external onlyAdmin whenTransfered
   {
+    require(!adminGotFee);
+
+    adminGotFee = true;
     poolDistributionWallet.transfer(calculatePoolValueFee(contributionBalance));
   }
 
@@ -347,6 +355,7 @@ contract PresalePool {
     {
       Participant storage participantInfo = participantsInfo[_participants[i]];
       participantInfo.isWhitelisted = true;
+      participants.push(_participants[i]);
     }
   }
 
@@ -398,5 +407,10 @@ contract PresalePool {
     presaleInfo.state = PresaleState.Closed;
 
     emit Closed();
+  }
+
+  function getCurrentState() public returns(uint)
+  {
+    return uint(presaleInfo.state);
   }
 }

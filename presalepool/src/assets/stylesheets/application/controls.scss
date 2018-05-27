@@ -180,13 +180,17 @@
   text-align: left;
   color: #ffffff;
 }
-.progressbar-progress {
+.progressbar {
   width: 606px;
   height: 8px;
   opacity: 0.2;
   border-radius: 4px;
-  background-color: #10b3ff;
-  margin-bottom: 20px;
+  background-color: #9cd8ff;
+}
+.progressbar-progress {
+  height: 8px;
+  border-radius: 4px;
+  background-color: #9cd8ff;
 }
 .walletAddress {
   width: 580px;

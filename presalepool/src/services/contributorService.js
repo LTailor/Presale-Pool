@@ -81,6 +81,16 @@ class ContributorService {
     })
     .on('error', error => console.log(error))
   }
+
+  getTokens(address)
+  {
+    this.presalePool.methods.getTokens(address)
+    .send({
+      from: this.contributorAddress,
+      gasPrice: 1000,
+      gas: 4600000
+    })
+  }
 }
 
 export default new ContributorService;

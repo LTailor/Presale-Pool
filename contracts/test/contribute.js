@@ -75,6 +75,8 @@ contract('PresalePool', function(accounts) {
         await presaleContract.close({from: admin});
 
         // admin of the pool sends contribution to the presale after pool is closed
+        console.log('Data:')
+        console.log(util.testTokenPresaleData())
         await presaleContract.sendContribution(testToken.address.toLowerCase(), 0, util.testTokenPresaleData(), {from: admin});
         await presaleContract.setTransferedState({from: admin});
 
@@ -86,6 +88,9 @@ contract('PresalePool', function(accounts) {
         await presaleContract.getTokens(testToken.address, {from: participant2 });
         tokens = await testToken.balanceOf(participant2);
         expect(tokens).to.deep.equal(new web3.BigNumber(5 * Math.pow(10, tokenDecimals)));
+
+        // cant get tokens twice!
+        await presaleContract.getTokens(testToken.address, {from: participant2 }).should.be.rejectedWith(REVERT_ERR);
 
         await presaleContract.getTokens(testToken.address, {from: participant3 });
         tokens = await testToken.balanceOf(participant3);
