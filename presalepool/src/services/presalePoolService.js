@@ -7,7 +7,7 @@ const abi = require('web3-eth-abi');
 
 class PresalePoolService {
 
-  presalePoolProxyAddress = "0xc9ed4e85678aed26162d8b8876fec077a94596e7";
+  presalePoolProxyAddress = "0x9ab743fb773fb012b1753258483a1a1694da4974";
   constructor() {
     this.getWeb3Promise = getWeb3().then(async (web3Config) => {
       const {web3Instance, defaultAccount} = web3Config;
@@ -81,6 +81,13 @@ class PresalePoolService {
        from: this.defaultAccount
       })
 
+      const tokenRateValues = await this.presalePool.methods.getTokenRate()
+      .call({
+       from: this.defaultAccount
+      })
+
+      this.poolSettings.tokenPrice = tokenRateValues[0]
+
       this.poolSettings.feePercentage = new Web3Utils.BN(poolFee).mul(new Web3Utils.BN(100)).div(Web3Utils.toWei(new Web3Utils.BN(1),'ether')).toString()
     })
 
@@ -124,6 +131,7 @@ class PresalePoolService {
           this.poolSettings.status = 2
     })
   }
+
   save()
   {
     if(typeof(this.poolSettings) == 'undefined')
@@ -157,8 +165,18 @@ class PresalePoolService {
       console.log(hash);
     })
 
-
     this.presalePool.methods.addAddressesToWhitelist(this.poolSettings.whitelist)
+    .send({
+      from: this.walletAddress,
+      gasPrice: 1000,
+      gas: 4600000
+    }
+    )
+    .on('transactionHash', (hash) => {
+      console.log(hash);
+    })
+
+    this.presalePool.methods.setTokenRate(this.poolSettings.tokenPrice, new Web3Utils.BN(18))
     .send({
       from: this.walletAddress,
       gasPrice: 1000,

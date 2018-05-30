@@ -61,6 +61,9 @@ strong {
   margin-bottom: 40px;
   color: #9cd8ff;
 }
+.ether-value {
+  color: #9cd8ff;
+}
 
 .container {
   @extend %container;
@@ -94,7 +97,7 @@ strong {
 
 .half-content
 {
-  width: 200px;
+  width: 220px;
   margin-right: 20px;
 }
 .dashboard-contribtuion-info

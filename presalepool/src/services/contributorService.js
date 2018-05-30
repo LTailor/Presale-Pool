@@ -16,7 +16,8 @@ class ContributorService {
   @observable contributionInEther = 0
   @observable maxAllocation = 0
   @observable poolFee = 0
-  @observable poolValue;
+  @observable poolValue
+  @observable realValue
 
   constructor() {
 
@@ -24,7 +25,7 @@ class ContributorService {
 
   init(smartContractAddress)
   {
-    this.getWeb3Promise = getWeb3().then(async (web3Config) => {
+    return this.getWeb3Promise = getWeb3().then(async (web3Config) => {
 
       const {web3Instance, defaultAccount} = web3Config
       this.contributorAddress = defaultAccount
@@ -54,6 +55,10 @@ class ContributorService {
         from: this.contributorAddress
       });
 
+      this.realValue = await this.presalePool.methods.getRealSum()
+      .call({
+        from: this.contributorAddress
+      });
 
       this.contribution = mySum
       this.contributionInEther = this.web3.utils.fromWei(mySum, 'ether');

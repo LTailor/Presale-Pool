@@ -32,14 +32,15 @@ export class CreateComponent extends React.Component {
       adminWallet2: '',
       adminWallet3: '',
       feePercentage: 0,
-      whitelistAddresses: []
+      whitelistAddresses: [],
+      tokenPrice: 0
     }
 
     this.state.walletAddress = ''
   }
   onSubmit(e){
     this.presalePoolSettings.setAdmins([this.state.adminWallet1, this.state.adminWallet2, this.state.adminWallet3]);
-    this.presalePoolSettings.setSettings(Web3Utils.toWei(this.state.maxAllocation), Web3Utils.toWei(this.state.maxPerContributor), Web3Utils.toWei(this.state.minPerContributor), this.state.feePercentage);
+    this.presalePoolSettings.setSettings(Web3Utils.toWei(this.state.maxAllocation), Web3Utils.toWei(this.state.maxPerContributor), Web3Utils.toWei(this.state.minPerContributor), this.state.feePercentage, Web3Utils.toWei(this.state.tokenPrice));
     this.presalePoolSettings.setWhitelist(this.state.whitelistAddresses)
     this.presalePoolService.createPool(this.walletStore, this.presalePoolSettings);
     e.preventDefault();
@@ -88,6 +89,11 @@ export class CreateComponent extends React.Component {
               <Input type="number" className="input" id="minPerContributor" value={this.state.minPerContributor} onChange ={this.onInputValueChange} validations={[required]}/>
               </div>
             </div>
+            </div>
+            <h5 className="header-2"><strong>Exchange Rate</strong></h5>
+            <div className="form-inline-i form-inline-i_token-address">
+              <label htmlFor="token-address" className="label">Price Per Token (ETH)</label>
+              <Input type="number" className="input" id="tokenPrice" value={this.state.tokenPrice} onChange ={this.onInputValueChange} validations={[required]}/>
             </div>
             <h5 className="header-2"><strong>Admins</strong></h5>
             <div className="form-inline">

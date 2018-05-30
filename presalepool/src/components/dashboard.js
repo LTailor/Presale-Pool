@@ -6,7 +6,8 @@ import Input from 'react-validation/build/input';
 import { inject, observer } from "mobx-react";
 import { required, isAddress, isPercentage} from "./validators"
 import Web3Utils from 'web3-utils'
-import Progress from 'react-progressbar';
+import { Line } from 'rc-progress';
+import { observable } from "mobx";
 
 const qs = require('query-string');
 
@@ -14,19 +15,25 @@ const qs = require('query-string');
 @inject("ContributorService")
 @observer
 export class DashboardComponent extends React.Component {
+  @observable contributionPercentage = 0
   constructor(props){
     super(props);
     this.contributorService = props.ContributorService;
 
-    this.contributorService.init(qs.parse(this.props.location.search).pool_address)
+    this.contributorService.init(qs.parse(this.props.location.search).pool_address).then(()=>{
+      this.contributionPercentage = new Web3Utils.BN(this.contributorService.maxPerContributor).div(new Web3Utils.BN(this.contributorService.contribution)).toString()
+      this.contributionPercentage = 100 / parseInt(this.contributionPercentage)
+
+    })
+
     this.onContribute = this.onContribute.bind(this);
     this.onWithdraw = this.onWithdraw.bind(this);
     this.onInputValueChange = this.onInputValueChange.bind(this);
     this.onGetTokens = this.onGetTokens.bind(this);
-
     this.state = {
       maxContirbution : this.contributorService.maxContribution,
       minContribution: this.contributorService.minContribution,
+      maxAllocation: this.contributorService.maxAllocation,
       contributorAddress: this.contributorService.contributorAddress,
       tokenAddress: ''
     }
@@ -75,12 +82,16 @@ export class DashboardComponent extends React.Component {
                   <p className="send-info-amount">{this.contributorService.contributionInEther} ETH</p>
                 </div>
                 <div className="form-inline">
+                  <p className="">Real Value:</p>
+                  <p className="ether-value">{Web3Utils.fromWei(new Web3Utils.BN(this.contributorService.realValue))} ETH</p>
+                </div>
+                <div className="form-inline">
                   <p className="">Fees:</p>
-                  <p className="description">{this.contributorService.poolFee} %</p>
+                  <p className="ether-value">{this.contributorService.poolFee} %</p>
                 </div>
               </div>
               <div className="form-inline">
-                <div className="progressbar"><Progress completed={35} height="8px"/></div>
+                <div className="progressbar"><Line percent="10" strokeWidth="4" strokeColor="#10b3ff" trailColor="#1f3444" trailWidth="2" strokeWidth="2"/></div>
               </div>
               <div>
                 <div>

@@ -316,6 +316,11 @@ contract PresalePool {
     tokenDecimals = decimals;
   }
 
+  function getTokenRate() external returns(uint, uint)
+  {
+    return (exchangeRate, tokenDecimals);
+  }
+
   function setTeamFeePerEther(uint fee) external onlyOwner whenOpened
   {
     feePerEtherTeam = fee;
@@ -349,6 +354,7 @@ contract PresalePool {
     poolDistributionWallet.transfer(calculatePoolValueFee(contributionBalance));
   }
 
+//reset addresses
   function addAddressesToWhitelist(address[] _participants) external onlyAdmin
   {
     for (uint i=0;i<_participants.length;i++)
