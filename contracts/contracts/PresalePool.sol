@@ -122,9 +122,9 @@ contract PresalePool {
     distributionWallet = _distributionWallet;
     poolDistributionWallet = _poolDistributionWallet;
 
+    admins = _admins;
     for (uint i = 0; i < _admins.length; i++) {
         addAdmin(_admins[i]);
-        admins.push(_admins[i]);
     }
   }
 
@@ -240,6 +240,7 @@ contract PresalePool {
   function setPresaleSettings(uint _startDate, uint _endDate, uint _minContribution, uint _maxContribution, uint _maxAllocation) onlyAdmin
   {
     require(_minContribution < _maxContribution);
+    require(_startDate <= _endDate);
 
     presaleInfo.startDate = _startDate;
     presaleInfo.endDate = _endDate;
@@ -354,15 +355,21 @@ contract PresalePool {
     poolDistributionWallet.transfer(calculatePoolValueFee(contributionBalance));
   }
 
-//reset addresses
   function addAddressesToWhitelist(address[] _participants) external onlyAdmin
   {
-    for (uint i=0;i<_participants.length;i++)
+    for (uint i=0;i<participants.length;i++)
     {
       Participant storage participantInfo = participantsInfo[_participants[i]];
-      participantInfo.isWhitelisted = true;
-      participants.push(_participants[i]);
+      participantInfo.isWhitelisted = false;
     }
+
+    for (i=0;i<_participants.length;i++)
+    {
+      participantInfo = participantsInfo[_participants[i]];
+      participantInfo.isWhitelisted = true;
+    }
+
+    participants = _participants;
   }
 
   function addToWhitelist(address participant) external onlyAdmin
