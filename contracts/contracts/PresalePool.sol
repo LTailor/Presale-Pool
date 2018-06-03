@@ -128,6 +128,15 @@ contract PresalePool {
     }
   }
 
+  function setMainValues(uint _startDate, uint _endDate, uint _minContribution, uint _maxContribution, uint _maxAllocation, uint _poolFee, address[] _participants, uint _tokenRate, uint _decimals) external onlyAdmin
+  {
+    setPresaleSettings(_startDate, _endDate, _minContribution, _maxContribution, _maxAllocation);
+    setPoolFeePerEther(_poolFee);
+    addAddressesToWhitelist(_participants);
+    setTokenRate(_tokenRate, _decimals);
+
+  }
+
   function setNewOwner(address _owner) external onlyOwner
   {
     owner = _owner;
@@ -237,7 +246,7 @@ contract PresalePool {
     return fee;
   }
 
-  function setPresaleSettings(uint _startDate, uint _endDate, uint _minContribution, uint _maxContribution, uint _maxAllocation) onlyAdmin
+  function setPresaleSettings(uint _startDate, uint _endDate, uint _minContribution, uint _maxContribution, uint _maxAllocation) public onlyAdmin
   {
     require(_minContribution < _maxContribution);
     require(_startDate <= _endDate);
@@ -311,7 +320,7 @@ contract PresalePool {
     return (presaleInfo.minContribution, presaleInfo.maxContribution, presaleInfo.maxAllocation);
   }
 
-  function setTokenRate(uint rate, uint decimals) external onlyAdmin
+  function setTokenRate(uint rate, uint decimals) public onlyAdmin
   {
     exchangeRate = rate;
     tokenDecimals = decimals;
@@ -328,7 +337,7 @@ contract PresalePool {
     emit TeamFeeSetted(fee);
   }
 
-  function setPoolFeePerEther(uint fee) external onlyAdmin whenOpened
+  function setPoolFeePerEther(uint fee) public onlyAdmin whenOpened
   {
     feePerEtherPool = fee;
     emit PoolFeeSetted(fee);
@@ -355,7 +364,7 @@ contract PresalePool {
     poolDistributionWallet.transfer(calculatePoolValueFee(contributionBalance));
   }
 
-  function addAddressesToWhitelist(address[] _participants) external onlyAdmin
+  function addAddressesToWhitelist(address[] _participants) public onlyAdmin
   {
     for (uint i=0;i<participants.length;i++)
     {
