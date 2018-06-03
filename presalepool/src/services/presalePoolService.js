@@ -139,44 +139,11 @@ class PresalePoolService {
       return
     }
 
-    this.presalePool.methods.setPresaleSettings(0, 0, this.poolSettings.minContribution, this.poolSettings.maxContribution, this.poolSettings.maxAllocation)
-    .send({
-      from: this.walletAddress,
-      gasPrice: 1000,
-      gas: 4600000
-    }
-    )
-    .on('transactionHash', (hash) => {
-      console.log(hash);
-    })
-
     const feePerEther = Web3Utils.toWei(new Web3Utils.BN(1),'ether')
     .mul(new Web3Utils.BN(this.poolSettings.feePercentage))
     .div(new Web3Utils.BN(100))
 
-    this.presalePool.methods.setPoolFeePerEther(feePerEther)
-    .send({
-      from: this.walletAddress,
-      gasPrice: 1000,
-      gas: 4600000
-    }
-    )
-    .on('transactionHash', (hash) => {
-      console.log(hash);
-    })
-
-    this.presalePool.methods.addAddressesToWhitelist(this.poolSettings.whitelist)
-    .send({
-      from: this.walletAddress,
-      gasPrice: 1000,
-      gas: 4600000
-    }
-    )
-    .on('transactionHash', (hash) => {
-      console.log(hash);
-    })
-
-    this.presalePool.methods.setTokenRate(this.poolSettings.tokenPrice, new Web3Utils.BN(18))
+    this.presalePool.methods.setMainValues(0, 0, this.poolSettings.minContribution, this.poolSettings.maxContribution, this.poolSettings.maxAllocation, feePerEther, this.poolSettings.whitelist, this.poolSettings.tokenPrice, new Web3Utils.BN(18))
     .send({
       from: this.walletAddress,
       gasPrice: 1000,
