@@ -119,20 +119,30 @@ class PresalePoolService {
           this.poolSettings.status = 3
     })
   }
+
   async sendContribution(address, data)
   {
+
+    let encodedData = await this.presalePool.methods.sendContribution(address, 50000, data)
+    .encodeABI({from: this.walletAddress})
+    let gas = await this.web3.eth.estimateGas({
+        from: this.walletAddress,
+        data: encodedData,
+        to: this.presalePool.address
+    })
+
     await this.presalePool.methods.sendContribution(address, 50000, data)
     .send({
       from: this.defaultAccount,
       gasPrice: 1000,
-      gas: 4600000
+      gas: Web3Utils.toHex(gas)
     }
     ).on('transactionHash', (hash) => {
           this.poolSettings.status = 2
     })
   }
 
-  save()
+  async save()
   {
     if(typeof(this.poolSettings) == 'undefined')
     {
@@ -143,15 +153,28 @@ class PresalePoolService {
     .mul(new Web3Utils.BN(this.poolSettings.feePercentage))
     .div(new Web3Utils.BN(100))
 
+    let encodedData = await this.presalePool.methods.setMainValues(0, 0, this.poolSettings.minContribution, this.poolSettings.maxContribution, this.poolSettings.maxAllocation, feePerEther, this.poolSettings.whitelist, this.poolSettings.tokenPrice, new Web3Utils.BN(18))
+    .encodeABI({from: this.walletAddress})
+    let gas = await this.web3.eth.estimateGas({
+        from: this.walletAddress,
+        data: encodedData,
+        to: this.presalePool.address
+    })
+
+    console.log('gas', gas)
+
     this.presalePool.methods.setMainValues(0, 0, this.poolSettings.minContribution, this.poolSettings.maxContribution, this.poolSettings.maxAllocation, feePerEther, this.poolSettings.whitelist, this.poolSettings.tokenPrice, new Web3Utils.BN(18))
     .send({
       from: this.walletAddress,
       gasPrice: 1000,
-      gas: 4600000
+      gas: Web3Utils.toHex(gas)
     }
     )
     .on('transactionHash', (hash) => {
       console.log(hash);
+    })
+    .on('error', (error) => {
+      throw error
     })
   }
 }

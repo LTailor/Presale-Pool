@@ -39,10 +39,18 @@ export class CreateComponent extends React.Component {
     this.state.walletAddress = ''
   }
   onSubmit(e){
-    this.presalePoolSettings.setAdmins([this.state.adminWallet1, this.state.adminWallet2, this.state.adminWallet3]);
-    this.presalePoolSettings.setSettings(Web3Utils.toWei(this.state.maxAllocation), Web3Utils.toWei(this.state.maxPerContributor), Web3Utils.toWei(this.state.minPerContributor), this.state.feePercentage, Web3Utils.toWei(this.state.tokenPrice));
-    this.presalePoolSettings.setWhitelist(this.state.whitelistAddresses)
-    this.presalePoolService.createPool(this.walletStore, this.presalePoolSettings);
+    try {
+      this.presalePoolSettings.setAdmins([this.state.adminWallet1, this.state.adminWallet2, this.state.adminWallet3]);
+      this.presalePoolSettings.setSettings(Web3Utils.toWei(this.state.maxAllocation), Web3Utils.toWei(this.state.maxPerContributor), Web3Utils.toWei(this.state.minPerContributor), this.state.feePercentage, Web3Utils.toWei(this.state.tokenPrice));
+      this.presalePoolSettings.setWhitelist(this.state.whitelistAddresses)
+      this.presalePoolService.createPool(this.walletStore, this.presalePoolSettings);
+    } catch (e) {
+      swal({
+        content: generateElementWithMessage(e),
+        icon: "error",
+      })
+    }
+
     e.preventDefault();
   }
   onWhitelistChange(e){
