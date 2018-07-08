@@ -54,6 +54,9 @@ contract('PresalePool', function(accounts) {
     it('participant can contribute only < max contribution', async () => {
       await presaleContract.setPresaleSettings(startDate, endDate+3600, ETHER, ETHER * 7, ETHER * 30, {from:admin});
       await presaleContract.contribute({value: new web3.BigNumber(ETHER * 8), from: participant1}).should.be.rejectedWith(REVERT_ERR);
+
+      await presaleContract.contribute({value: new web3.BigNumber(ETHER * 4), from: participant1})
+      await presaleContract.contribute({value: new web3.BigNumber(ETHER * 5), from: participant1}).should.be.rejectedWith(REVERT_ERR);
     });
 
     it('rebalancing correct', async () => {
