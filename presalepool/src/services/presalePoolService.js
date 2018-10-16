@@ -7,7 +7,7 @@ const abi = require('web3-eth-abi');
 
 class PresalePoolService {
 
-  presalePoolProxyAddress = "0x9ab743fb773fb012b1753258483a1a1694da4974";
+  presalePoolProxyAddress = "0xc9ed4e85678aed26162d8b8876fec077a94596e7";
   constructor() {
     this.getWeb3Promise = getWeb3().then(async (web3Config) => {
       const {web3Instance, defaultAccount} = web3Config;
@@ -29,7 +29,7 @@ class PresalePoolService {
       gas: 4600000
     })
     .on('transactionHash', (hash) => {
-      console.log(hash);
+      console.log(hash); }).then(()=>{
       this.poolProxy.methods.getPresalePoolAddress(walletSettings.walletAddress).call({from:walletSettings.walletAddress})
       .then((address)=>{
         console.log(address)
@@ -39,9 +39,6 @@ class PresalePoolService {
         this.save()
       });
     })
-    .on('error', (error) => {
-      console.log(error);
-    });
   }
 
   init(poolSettings)
@@ -122,20 +119,11 @@ class PresalePoolService {
 
   async sendContribution(address, data)
   {
-
-    let encodedData = await this.presalePool.methods.sendContribution(address, 50000, data)
-    .encodeABI({from: this.walletAddress})
-    let gas = await this.web3.eth.estimateGas({
-        from: this.walletAddress,
-        data: encodedData,
-        to: this.presalePool.address
-    })
-
     await this.presalePool.methods.sendContribution(address, 50000, data)
     .send({
       from: this.defaultAccount,
       gasPrice: 1000,
-      gas: Web3Utils.toHex(gas)
+      gas: 4600000
     }
     ).on('transactionHash', (hash) => {
           this.poolSettings.status = 2
@@ -190,7 +178,7 @@ class PresalePoolService {
     .send({
       from: this.walletAddress,
       gasPrice: 1000,
-      gas: Web3Utils.toHex(gas)
+      gas: 4600000
     }
     )
     .on('transactionHash', (hash) => {

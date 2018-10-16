@@ -4,7 +4,7 @@ contract PresalePoolProxy
 {
 
   mapping (address => address) public presalePoolAddress;
-  address distributionWallet = 0x0612640F0557C41aA2b31cB27F982DF8c63001eE;
+  address distributionWallet = 0xaa81edab0ecb7753ea436a3a02ba334d2d4ebb3f;
   function init(address[] admins, address wallet) public
   {
     PresalePool presalePool = new PresalePool();

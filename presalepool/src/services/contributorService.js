@@ -13,11 +13,11 @@ class ContributorService {
   @observable maxPerContributor = 0
   @observable minPerContributor = 0
   @observable contribution = 0
-  @observable contributionInEther = 0
   @observable maxAllocation = 0
   @observable poolFee = 0
   @observable poolValue
   @observable realValue
+  @observable contributionInEther = 0
 
   constructor() {
 
@@ -45,10 +45,7 @@ class ContributorService {
       })
       this.poolFee = new Web3Utils.BN(poolFee).mul(new Web3Utils.BN(100)).div(Web3Utils.toWei(new Web3Utils.BN(1),'ether')).toString()
 
-      const mySum = await this.presalePool.methods.getContributedSumAfterFees()
-      .call({
-        from: this.contributorAddress
-      })
+      this.contribution = await this.getContribution();
 
       this.poolValue = await this.presalePool.methods.getPoolValue()
       .call({
@@ -59,21 +56,36 @@ class ContributorService {
       .call({
         from: this.contributorAddress
       });
-
-      this.contribution = mySum
-      this.contributionInEther = this.web3.utils.fromWei(mySum, 'ether');
+      this.contributionInEther = this.convertToEther(this.contribution);
     })
   }
 
-  contribute(etherValue)
+
+  async getContribution() {
+    const mySum = await this.presalePool.methods.getContributedSumAfterFees()
+    .call({
+      from: this.contributorAddress
+    })
+
+    return mySum;
+  }
+
+  convertToEther(contribution)
   {
-    this.presalePool.methods.contribute()
+    return this.web3.utils.fromWei(contribution.toString(), 'ether');
+  }
+
+  async contribute(etherValue)
+  {
+    await this.presalePool.methods.contribute()
     .send({
       from: this.contributorAddress,
       gasPrice: 1000,
       gas: 4600000,
       value: Web3Utils.toHex(etherValue)
     })
+    this.contribution = await this.getContribution();
+    this.contributionInEther = this.convertToEther(this.contribution);
   }
 
   withdrawContribution()

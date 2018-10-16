@@ -21,9 +21,11 @@ export class DashboardComponent extends React.Component {
     this.contributorService = props.ContributorService;
 
     this.contributorService.init(qs.parse(this.props.location.search).pool_address).then(()=>{
-      this.contributionPercentage = new Web3Utils.BN(this.contributorService.maxPerContributor).div(new Web3Utils.BN(this.contributorService.contribution)).toString()
-      this.contributionPercentage = 100 / parseInt(this.contributionPercentage)
-
+      if(this.contributorService.contribution>0)
+      {
+        this.contributionPercentage = new Web3Utils.BN(this.contributorService.maxPerContributor).div(new Web3Utils.BN(this.contributorService.contribution)).toString() // check for 0
+        this.contributionPercentage = 100 / parseInt(this.contributionPercentage)
+      }
     })
 
     this.onContribute = this.onContribute.bind(this);
