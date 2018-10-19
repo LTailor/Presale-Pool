@@ -17,6 +17,7 @@ class PoolSettingsStore {
     this.minContribution = minContribution
     this.feePercentage = fee
     this.tokenPrice = tokenPrice
+    alert(maxAllocation);
   }
 
   setAdmins(admins)

@@ -17,7 +17,7 @@ class PresalePoolService {
   }
 
   createPool(walletSettings, poolSettings)
-  {
+  { 
     this.walletSettings = walletSettings
     this.walletAddress = walletSettings.walletAddress
     this.poolSettings = poolSettings
@@ -137,7 +137,14 @@ class PresalePoolService {
       return
     }
 
-    this.presalePool.methods.setPresaleSettings(0, 0, this.poolSettings.minContribution, this.poolSettings.maxContribution, this.poolSettings.maxAllocation)
+    const minContributionEther = Web3Utils.toWei(new Web3Utils.BN(1),'ether')
+    .mul(new Web3Utils.BN(this.poolSettings.minContribution));
+    const maxContributionEther = Web3Utils.toWei(new Web3Utils.BN(1),'ether')
+    .mul(new Web3Utils.BN(this.poolSettings.maxContribution));
+    const maxAllocationEther = Web3Utils.toWei(new Web3Utils.BN(1),'ether')
+    .mul(new Web3Utils.BN(this.poolSettings.maxAllocation));
+
+    this.presalePool.methods.setPresaleSettings(0, 0, minContributionEther, maxContributionEther, maxAllocationEther)
     .send({
       from: this.walletAddress,
       gasPrice: 1000,
@@ -174,7 +181,10 @@ class PresalePoolService {
       console.log(hash);
     })
 
-    this.presalePool.methods.setTokenRate(this.poolSettings.tokenPrice, new Web3Utils.BN(18))
+    const tokenPriceEther = Web3Utils.toWei(new Web3Utils.BN(1),'ether')
+    .mul(new Web3Utils.BN(this.poolSettings.tokenPrice));
+
+    this.presalePool.methods.setTokenRate(tokenPriceEther, new Web3Utils.BN(18))
     .send({
       from: this.walletAddress,
       gasPrice: 1000,
