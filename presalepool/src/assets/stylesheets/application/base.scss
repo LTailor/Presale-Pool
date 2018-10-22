@@ -14,7 +14,7 @@ body {
   position: relative;
   min-height: 100%;
   box-sizing: border-box;
-  background-color: #011d2f;
+  background-color: #ffffff;
 
   &:after {
     content: '';
@@ -28,13 +28,13 @@ body {
 }
 
 p {
-  color: #fff;
+  color: #A9A9A9;
   line-height: 22px;
   font-size: 14px;
 }
 
 a {
-  color: #10b3ff;
+  color: #C0C0C0;
 
   &:hover {
     text-decoration: none;
@@ -47,7 +47,7 @@ strong {
 
 .title {
   margin-bottom: 30px;
-  color: #fff;
+  color: #A9A9A9;
   line-height: 46px;
   font-size: 32px;
   font-weight: 300;
@@ -59,10 +59,10 @@ strong {
 
 .description {
   margin-bottom: 40px;
-  color: #9cd8ff;
+  color: #C0C0C0;
 }
 .ether-value {
-  color: #9cd8ff;
+  color: #C0C0C0;
 }
 
 .container {
@@ -80,7 +80,6 @@ strong {
       top: 10px;
       width: 570px;
       height: 445px;
-      background-image: url(../images/illustration.png);
 
       @media (max-width: $container-responsive--width) {
         display: none;
