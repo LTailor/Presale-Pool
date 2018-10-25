@@ -14,7 +14,7 @@ body {
   position: relative;
   min-height: 100%;
   box-sizing: border-box;
-  background-color: #ffffff;
+  background-color: #3b3b58;
 
   &:after {
     content: '';
@@ -28,13 +28,13 @@ body {
 }
 
 p {
-  color: #A9A9A9;
+  color: #A96DA3;
   line-height: 22px;
   font-size: 14px;
 }
 
 a {
-  color: #C0C0C0;
+  color: #7a5980;
 
   &:hover {
     text-decoration: none;
@@ -47,7 +47,7 @@ strong {
 
 .title {
   margin-bottom: 30px;
-  color: #A9A9A9;
+  color: #A96DA3;
   line-height: 46px;
   font-size: 32px;
   font-weight: 300;
@@ -59,10 +59,10 @@ strong {
 
 .description {
   margin-bottom: 40px;
-  color: #C0C0C0;
+  color: #7a5980;
 }
 .ether-value {
-  color: #C0C0C0;
+  color: #7a5980;
 }
 
 .container {
