@@ -5,6 +5,9 @@ import './assets/stylesheets/application.css';
 
 export class App extends React.Component {
   render(){
+    if(!window.web3) {
+      return <div> You must use Metamask</div>
+    }
     return (
       <div>
         <Header/>
