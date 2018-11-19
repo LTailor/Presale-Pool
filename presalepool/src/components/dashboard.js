@@ -60,7 +60,6 @@ export class DashboardComponent extends React.Component {
 
   onInputValueChange(event) {
     this.setState({[event.target.id]: event.target.value });
-    alert(JSON.stringify(this.state))
   }
 
   render () {

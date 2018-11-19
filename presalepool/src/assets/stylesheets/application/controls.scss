@@ -166,8 +166,8 @@
   width: 205px;
   height: 40px;
   border-radius: 20px;
-  background-color: #98d7ff;
-  border: solid 1px #95d5ff;
+  background-color: #A96DA3;
+  border: solid 1px #7a5980;
 }
 .Ether-input
 {
@@ -195,7 +195,7 @@
 .progressbar-progress {
   height: 40px;
   border-radius: 4px;
-  background-color: rgb(67, 179, 248);
+  background-color: #A96DA3;
 }
 .walletAddress {
   width: 580px;
@@ -243,14 +243,14 @@
   line-height: 5.14;
   letter-spacing: normal;
   text-align: left;
-  color: #8dd2ff;
+  color: #A96DA3;
 }
 .input-half  {
   width: 205px;
   height: 40px;
   border-radius: 20px;
-  background-color: #98d7ff;
-  border: solid 1px #95d5ff;
+  background-color: #A96DA3;
+  border: solid 1px #7a5980;
 }
 .button {
   @extend %control;
@@ -275,7 +275,7 @@
     box-shadow:         inset 0 0 10px fade-out(#0b4865, 0.7);
   }
   &:hover {
-    box-shadow: 0px 10px 20px 0 fade-out(#10b3ff, 0.7);
+    box-shadow: 0px 10px 20px 0 fade-out(#A96DA3, 0.7);
   }
   &_next {
     margin-top: 20px;
@@ -287,8 +287,7 @@
   &_contrib {
     width: 161px;
     height: 40px;
-    border-radius: 20px;
-    background-color: #10b3ff;
+    background-color: #A96DA3;
     box-shadow: 0px 10px 20px 0 rgba(16, 179, 255, 0.3);
     margin-bottom: 20px;
     margin-right: 20px;
@@ -296,8 +295,7 @@
   &_withdraw {
     width: 161px;
     height: 40px;
-    border-radius: 20px;
-    background-color: #10b3ff;
+    background-color: #A96DA3;
     box-shadow: 0px 10px 20px 0 rgba(16, 179, 255, 0.3);
     margin-bottom: 20px;
   }
