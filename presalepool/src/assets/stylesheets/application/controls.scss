@@ -208,15 +208,15 @@
   line-height: 3;
   letter-spacing: normal;
   text-align: left;
-  color: #9cd8ff;
+  color: #A96DA3;
 }
 
 .contributeEther  {
   width: 161px;
   height: 40px;
   border-radius: 20px;
-  background-color: #10b3ff;
-  box-shadow: 0px 10px 20px 0 rgba(16, 179, 255, 0.3);
+  background-color: #7a5980;
+  box-shadow: 0px 10px 20px 0 #A96DA3;
 }
 .contributeEther p
 {
@@ -261,18 +261,15 @@
   border: 0;
   padding: 0 20px;
   background-color: #A96DA3;
+  color: #ffffff;
   background-repeat: no-repeat;
   text-decoration: none;
   font-size: 16px;
   font-weight: bold;
   &:disabled {
-    -moz-box-shadow:    inset 0 0 10px fade-out(#0b4865, 0.7);
-    -webkit-box-shadow: inset 0 0 10px fade-out(#0b4865, 0.7);
-    box-shadow:         inset 0 0 10px fade-out(#0b4865, 0.7);
     opacity: 0.88;
   }
   &:disabled:hover {
-    box-shadow:         inset 0 0 10px fade-out(#0b4865, 0.7);
   }
   &:hover {
     box-shadow: 0px 10px 20px 0 fade-out(#A96DA3, 0.7);
@@ -288,16 +285,20 @@
     width: 161px;
     height: 40px;
     background-color: #A96DA3;
-    box-shadow: 0px 10px 20px 0 rgba(16, 179, 255, 0.3);
     margin-bottom: 20px;
     margin-right: 20px;
+    color: #ffffff;
+    border: 1;
+    border-color: #7a5980;
   }
   &_withdraw {
     width: 161px;
     height: 40px;
     background-color: #A96DA3;
-    box-shadow: 0px 10px 20px 0 rgba(16, 179, 255, 0.3);
+    color: #ffffff;
     margin-bottom: 20px;
+    border: 1;
+    border-color: #7a5980;
   }
   &_add {
     width: 40px;
