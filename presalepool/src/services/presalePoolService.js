@@ -28,16 +28,26 @@ class PresalePoolService {
       gasPrice: 1000,
       gas: 4600000
     })
-    .on('transactionHash', (hash) => {
-      console.log(hash); }).then(()=>{
-      this.poolProxy.methods.getPresalePoolAddress(walletSettings.walletAddress).call({from:walletSettings.walletAddress})
-      .then((address)=>{
-        console.log(address)
-        this.poolSettings.presalePoolAddress = address
-        this.presalePoolAddress = address
-        this.presalePool = new this.web3.eth.Contract(presalePoolAbi, this.poolSettings.presalePoolAddress)
-        this.save()
-      });
+    .on('receipt', (receipt) => {
+      console.log(receipt); 
+      this.web3.eth.getTransactionReceipt(receipt.transactionHash, (error, res) => {
+        if(res && res.blockNumber){
+          console.log(res,"res");
+          if(res.status){
+            this.poolProxy.methods.getPresalePoolAddress(walletSettings.walletAddress).call({from:walletSettings.walletAddress})
+            .then((address)=>{
+              console.log('dddd');
+              console.log(address)
+              this.poolSettings.presalePoolAddress = address
+              this.presalePoolAddress = address
+              this.presalePool = new this.web3.eth.Contract(presalePoolAbi, this.poolSettings.presalePoolAddress)
+              this.save()
+            });
+          } else {
+            console.log(error);
+          }
+        }
+      })
     })
   }
 

@@ -136,22 +136,22 @@ export class AdminComponent extends React.Component {
               <h5 className="header-2"><strong>Exchange Rate</strong></h5>
               <div className="form-inline-i form-inline-i_token-address">
                 <label htmlFor="token-address" className="label">Price Per Token (ETH)</label>
-                <Input type="number" className="input" id="tokenPrice" value={this.poolValues.tokenPrice} onChange ={this.onInputValueChange} validations={[required]}/>
+                <Input type="number" className="input" id="tokenPrice" value={Web3Utils.fromWei(this.poolValues.tokenPrice.toString())} onChange ={this.onInputValueChange} validations={[required]}/>
               </div>
               <h5 className="header-2"><strong>Allocation</strong></h5>
               <div className="form-inline-i form-inline-i_token-address">
                 <label htmlFor="token-address" className="label">Maximum Allocation (ETH)</label>
-                <Input type="number" className="input" id="maxAllocation" value={this.poolValues.maxAllocation} onChange ={this.onInputValueChange} validations={[required]}/>
+                <Input type="number" className="input" id="maxAllocation" value={Web3Utils.fromWei(this.poolValues.maxAllocation)} onChange ={this.onInputValueChange} validations={[required]}/>
               </div>
               <div className="form-inline-i form-inline-i_token-address">
               <div className="Ether-input">
                 <div className="half-content">
                 <label htmlFor="max-contrib" className="Maximum-Per-Contributor-ETH">Maximum Per Contributor (ETH)</label>
-                <Input type="number" className="input" id="maxPerContributor" value={this.poolValues.maxPerContributor} onChange ={this.onInputValueChange} validations={[required]}/>
+                <Input type="number" className="input" id="maxPerContributor" value={Web3Utils.fromWei(this.poolValues.maxPerContributor)} onChange ={this.onInputValueChange} validations={[required]}/>
                 </div>
                 <div className="half-content">
                 <label htmlFor="min-contrib" className="Maximum-Per-Contributor-ETH">Minimum Per Contributor (ETH)</label>
-                <Input type="number" className="input" id="minPerContributor" value={this.poolValues.minPerContributor} onChange ={this.onInputValueChange} validations={[required]}/>
+                <Input type="number" className="input" id="minPerContributor" value={Web3Utils.fromWei(this.poolValues.minPerContributor)} onChange ={this.onInputValueChange} validations={[required]}/>
                 </div>
               </div>
               </div>

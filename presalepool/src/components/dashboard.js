@@ -130,13 +130,13 @@ export class DashboardComponent extends React.Component {
             <div className="form-inline-i form-inline-i_token-address">
               <h5 className="header-2"><strong>Allocation</strong></h5>
               <label htmlFor="token-address" className="label">Total pool allocation</label>
-              <label htmlFor="network" className="walletAddress">{Web3Utils.fromWei(new Web3Utils.BN(this.contributorService.maxAllocation),'ether').toString()} ETH</label>
+              <label htmlFor="network" className="walletAddress">{Web3Utils.fromWei(this.contributorService.maxAllocation,'ether')} ETH</label>
 
               <label htmlFor="token-address" className="label">Max per contributor</label>
-              <label htmlFor="network" className="walletAddress">{Web3Utils.fromWei(new Web3Utils.BN(this.contributorService.maxPerContributor),'ether').toString()} ETH</label>
+              <label htmlFor="network" className="walletAddress">{Web3Utils.fromWei(this.contributorService.maxPerContributor,'ether')} ETH</label>
 
               <label htmlFor="token-address" className="label">Min per contributor</label>
-              <label htmlFor="network" className="walletAddress">{Web3Utils.fromWei(new Web3Utils.BN(this.contributorService.minPerContributor),'ether').toString()} ETH</label>
+              <label htmlFor="network" className="walletAddress">{Web3Utils.fromWei(this.contributorService.minPerContributor,'ether')} ETH</label>
             </div>
             <div className="form-inline-i form-inline-i_token-address">
               <h5 className="header-2"><strong>Pool Value</strong></h5>
