@@ -1,14 +1,16 @@
 import PoolSettingsStore from './PoolSettingsStore'
 import WalletStore from './WalletStore';
+import { action, observable } from "mobx";
 
 class Store {
+  @observable web3Settings = {};
   constructor() {
     this.walletStore = new WalletStore()
     this.poolSettingsStore = new PoolSettingsStore()
   }
 
-  setWeb3(web3) {
-    this.web3 = web3;
+  setWeb3Settings(settings) {
+    this.web3Settings = settings;
   }
 }
 

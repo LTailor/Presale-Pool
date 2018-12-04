@@ -17,9 +17,8 @@ export class WalletComponent extends React.Component {
     this.state = {
       walletAddress : ''
     }
-
-    this.state.walletAddress = '';
   }
+
   onSubmit(e){
     e.preventDefault()
     if (!this.walletStore.checkAddress(this.state.walletAddress))
@@ -35,6 +34,7 @@ export class WalletComponent extends React.Component {
     }
   }
   async onAddressChange(event) {
+    this.props.Stores.web3Settings.defaultAccount = event.target.value;
     this.setState({walletAddress: event.target.value});
   }
   render () {
@@ -51,7 +51,7 @@ export class WalletComponent extends React.Component {
             <div className="form-inline">
               <div className="form-inline-i form-inline-i_token-address">
                   <label htmlFor="token-address" className="label">Your wallet address</label>
-                  <input type="text" className="input" id="wallet-address" value={this.state.walletAddress} onChange={this.onAddressChange}/>
+                  <input type="text" className="input" id="wallet-address" value={this.props.Stores.web3Settings.defaultAccount} onChange={this.onAddressChange}/>
               </div>
             </div>
             <Button className="button button_next">Submit</Button>

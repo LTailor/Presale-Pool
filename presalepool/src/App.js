@@ -23,8 +23,7 @@ export class App extends React.Component {
           injectedWeb3: true,
           defaultAccount
         }
-
-        this.props.Stores.setWeb3(web3);
+        this.props.Stores.setWeb3Settings(results);
       })
     }
   }

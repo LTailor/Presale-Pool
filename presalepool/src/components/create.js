@@ -61,7 +61,7 @@ export class CreateComponent extends React.Component {
     }
   }
   onInputValueChange(event) {
-    alert(this.props.Stores.web3);
+
     let stateChange = {}
     stateChange[event.target.id] = event.target.value;
     this.setState(stateChange);
