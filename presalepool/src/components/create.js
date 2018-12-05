@@ -18,11 +18,16 @@ export class CreateComponent extends React.Component {
     super(props)
     this.walletStore = props.Stores.walletStore
     this.presalePoolSettings = props.Stores.poolSettingsStore
+    this.gasPriceStore = props.Stores.gasPriceStore;
     this.presalePoolService = props.PresalePoolService
 
     this.onSubmit = this.onSubmit.bind(this)
     this.onInputValueChange = this.onInputValueChange.bind(this)
     this.onWhitelistChange = this.onWhitelistChange.bind(this)
+
+    this.gasPriceStore.getGasPrice((gasPriceInHex) => {
+      this.gasPriceInHex = gasPriceInHex;
+    })
 
     this.state = {
       maxAllocation : '',
@@ -43,7 +48,7 @@ export class CreateComponent extends React.Component {
       this.presalePoolSettings.setAdmins([this.state.adminWallet1, this.state.adminWallet2, this.state.adminWallet3]);
       this.presalePoolSettings.setSettings(Web3Utils.toWei(this.state.maxAllocation), Web3Utils.toWei(this.state.maxPerContributor), Web3Utils.toWei(this.state.minPerContributor), this.state.feePercentage, Web3Utils.toWei(this.state.tokenPrice));
       this.presalePoolSettings.setWhitelist(this.state.whitelistAddresses)
-      this.presalePoolService.createPool(this.walletStore, this.presalePoolSettings);
+      this.presalePoolService.createPool(this.walletStore, this.presalePoolSettings, this.gasPriceInHex);
     } catch (e) {
       swal({
         content: generateElementWithMessage(e),

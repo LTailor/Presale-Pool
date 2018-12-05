@@ -9,6 +9,7 @@ class PresalePoolService {
 
   presalePoolProxyAddress = "0xc9ed4e85678aed26162d8b8876fec077a94596e7";
   constructor() {
+
     this.getWeb3Promise = getWeb3().then(async (web3Config) => {
       const {web3Instance, defaultAccount} = web3Config;
       this.defaultAccount = defaultAccount;
@@ -16,7 +17,7 @@ class PresalePoolService {
     });
   }
 
-  createPool(walletSettings, poolSettings)
+  createPool(walletSettings, poolSettings, gasPriceInHex)
   { 
     this.walletSettings = walletSettings
     this.walletAddress = walletSettings.walletAddress
@@ -25,7 +26,7 @@ class PresalePoolService {
     this.poolProxy.methods.init(poolSettings.admins, walletSettings.walletAddress)
     .send({
       from: walletSettings.walletAddress,
-      gasPrice: 1000,
+      gasPrice: gasPriceInHex,
       gas: 4600000
     })
     .on('receipt', (receipt) => {
@@ -36,7 +37,6 @@ class PresalePoolService {
           if(res.status){
             this.poolProxy.methods.getPresalePoolAddress(walletSettings.walletAddress).call({from:walletSettings.walletAddress})
             .then((address)=>{
-              console.log('dddd');
               console.log(address)
               this.poolSettings.presalePoolAddress = address
               this.presalePoolAddress = address
