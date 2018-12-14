@@ -3,13 +3,17 @@ import presalePoolAbi from "../abis/PresalePool.json"
 import Web3 from 'web3'
 import Web3Utils from 'web3-utils'
 import getWeb3 from './getWeb3';
+import Store from '../stores/Store'
+
 const abi = require('web3-eth-abi');
 
 class PresalePoolService {
 
   presalePoolProxyAddress = "0xc9ed4e85678aed26162d8b8876fec077a94596e7";
   constructor() {
-
+    Store.gasPriceStore.getGasPrice().then((gasPriceInHex)=>{
+      this.gasPriceInHex = gasPriceInHex;
+    })
     this.getWeb3Promise = getWeb3().then(async (web3Config) => {
       const {web3Instance, defaultAccount} = web3Config;
       this.defaultAccount = defaultAccount;
@@ -119,7 +123,7 @@ class PresalePoolService {
     await this.presalePool.methods.setTransferedState()
     .send({
       from: this.defaultAccount,
-      gasPrice: 1000,
+      gasPrice: this.gasPriceInHex,
       gas: 4600000
     }
     ).on('transactionHash', (hash) => {
@@ -132,7 +136,7 @@ class PresalePoolService {
     await this.presalePool.methods.sendContribution(address, 50000, data)
     .send({
       from: this.defaultAccount,
-      gasPrice: 1000,
+      gasPrice: this.gasPriceInHex,
       gas: 4600000
     }
     ).on('transactionHash', (hash) => {
@@ -157,7 +161,7 @@ class PresalePoolService {
     this.presalePool.methods.setPresaleSettings(0, 0, minContributionEther, maxContributionEther, maxAllocationEther)
     .send({
       from: this.walletAddress,
-      gasPrice: 1000,
+      gasPrice: this.gasPriceInHex,
       gas: 4600000
     }
     )
@@ -172,7 +176,7 @@ class PresalePoolService {
     this.presalePool.methods.setPoolFeePerEther(feePerEther)
     .send({
       from: this.walletAddress,
-      gasPrice: 1000,
+      gasPrice: this.gasPriceInHex,
       gas: 4600000
     }
     )
@@ -183,7 +187,7 @@ class PresalePoolService {
     this.presalePool.methods.addAddressesToWhitelist(this.poolSettings.whitelist)
     .send({
       from: this.walletAddress,
-      gasPrice: 1000,
+      gasPrice: this.gasPriceInHex,
       gas: 4600000
     }
     )
@@ -197,7 +201,7 @@ class PresalePoolService {
     this.presalePool.methods.setTokenRate(tokenPriceEther, new Web3Utils.BN(18))
     .send({
       from: this.walletAddress,
-      gasPrice: 1000,
+      gasPrice: this.gasPriceInHex,
       gas: 4600000
     }
     )
