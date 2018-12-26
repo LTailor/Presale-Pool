@@ -1,4 +1,4 @@
-import { action, observable } from "mobx"
+import { observable } from "mobx"
 class PoolSettingsStore {
   @observable presalePoolAddress = ''
   @observable maxAllocation = 0
@@ -21,7 +21,7 @@ class PoolSettingsStore {
 
   setAdmins(admins)
   {
-    this.admins = admins.filter( a => typeof(a) != 'undefined' && a!='');
+    this.admins = admins.filter( a => typeof(a) !== 'undefined' && a !== '');
   }
 
   setWhitelist(addresses)

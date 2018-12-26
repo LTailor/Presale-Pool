@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import Form from 'react-validation/build/form';
 import Button from 'react-validation/build/button';
 import Textarea from 'react-validation/build/textarea';
@@ -60,9 +59,11 @@ export class CreateComponent extends React.Component {
   }
   onWhitelistChange(e){
     const addresses = e.target.value.split(',')
-    if(addresses!='undefined' && addresses.length!=0)
+    if(addresses!=='undefined' && addresses.length!==0)
     {
-      this.state.whitelistAddresses = addresses.filter(w => typeof(w)!='undefined')
+      this.setState({
+        whitelistAddresses: addresses.filter(w => typeof(w)!=='undefined')
+      })
     }
   }
   onInputValueChange(event) {
@@ -144,7 +145,7 @@ export class CreateComponent extends React.Component {
             <Textarea
               data-gram
               className="textarea"
-              onChange={this.onWhitelistChange} className="textarea"></Textarea>
+              onChange={this.onWhitelistChange}></Textarea>
             </div>
 
             <h5 className="header-2"><strong>Fees</strong></h5>

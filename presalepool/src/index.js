@@ -6,7 +6,6 @@ import { Provider } from "mobx-react";
 import Store from "./stores/Store";
 import PresalePoolService from "./services/presalePoolService";
 import ContributorService from "./services/contributorService";
-import GasPriceStore from "./stores/GasPriceStore";
 
 const Root = (
   <Provider Stores={Store} PresalePoolService = {PresalePoolService} ContributorService = {ContributorService}>

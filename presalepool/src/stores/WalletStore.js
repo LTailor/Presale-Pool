@@ -1,10 +1,8 @@
 import Web3Utils from 'web3-utils';
-import { action, observable } from "mobx";
+import { observable } from "mobx";
 
 class WalletStore {
   @observable address = '';
-  constructor() {
-  }
 
   checkAddress(str)
   {

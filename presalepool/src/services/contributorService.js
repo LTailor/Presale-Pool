@@ -2,10 +2,7 @@ import presalePoolAbi from "../abis/PresalePool.json"
 import Web3 from 'web3'
 import getWeb3 from './getWeb3';
 import Web3Utils from 'web3-utils'
-import { observer } from "mobx-react";
 import { observable } from "mobx";
-
-const abi = require('web3-eth-abi');
 
 class ContributorService {
 
@@ -18,10 +15,6 @@ class ContributorService {
   @observable poolValue
   @observable realValue
   @observable contributionInEther = 0
-
-  constructor() {
-
-  }
 
   init(smartContractAddress)
   {
@@ -110,4 +103,4 @@ class ContributorService {
   }
 }
 
-export default new ContributorService;
+export default new ContributorService();

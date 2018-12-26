@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
-import { Header, WalletComponent, CreateComponent, DashboardComponent, AdminComponent } from './components';
+import React from 'react';
 import { Route } from 'react-router-dom';
 import { inject } from "mobx-react";
+import { Header, WalletComponent, CreateComponent, DashboardComponent, AdminComponent } from './components';
 import './assets/stylesheets/application.css';
 
 @inject("Stores")
@@ -11,9 +11,7 @@ export class App extends React.Component {
     let results
     let web3 = window.web3
 
-    // Checking if Web3 has been injected by the browser (Mist/MetaMask)
     if (typeof web3 !== 'undefined') {
-      // Use Mist/MetaMask's provider.
       web3 = new window.Web3(web3.currentProvider)
       web3.version.getNetwork((err, netId) => {
         var defaultAccount = web3.eth.defaultAccount || null;
@@ -30,7 +28,7 @@ export class App extends React.Component {
 
   render(){
     if(!window.web3) {
-      return <div> You must use Metamask</div>
+      return <div> You must use Metamask </div>
     }
 
     return (

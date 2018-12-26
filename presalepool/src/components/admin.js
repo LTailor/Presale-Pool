@@ -1,15 +1,13 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import Form from 'react-validation/build/form';
 import Button from 'react-validation/build/button';
 import Textarea from 'react-validation/build/textarea';
 import Input from 'react-validation/build/input';
 import { inject, observer } from "mobx-react";
 import { observable } from "mobx";
-import { required, isAddress, isPercentage} from "./validators"
-import swal from 'sweetalert';
-import generateElementWithMessage from "../helpers/UIHelper";
 import Web3Utils from 'web3-utils'
+import { required, isPercentage} from "./validators"
+
 const qs = require('query-string')
 
 @inject("Stores")
@@ -30,6 +28,7 @@ export class AdminComponent extends React.Component {
     status: '',
     tokenAddress: ''
   }
+
   constructor(props){
     super(props);
     this.presalePoolSettings = props.Stores.poolSettingsStore
@@ -81,36 +80,43 @@ export class AdminComponent extends React.Component {
       case '3':
         status = 'Transfered'
         break
+      default:
+        break;
     }
 
     this.poolValues.status = status
   }
 
-  onSubmit(e){
+  onSubmit(e) {
     this.presalePoolSettings.setAdmins([this.poolValues.adminWallet1, this.poolValues.adminWallet2, this.poolValues.adminWallet3]);
     this.presalePoolSettings.setSettings(Web3Utils.toWei(this.poolValues.maxAllocation), Web3Utils.toWei(this.poolValues.maxPerContributor), Web3Utils.toWei(this.poolValues.minPerContributor), this.poolValues.feePercentage, Web3Utils.toWei(this.poolValues.tokenPrice));
     this.presalePoolSettings.setWhitelist(this.poolValues.whitelistAddresses)
     this.presalePoolService.save()
     e.preventDefault()
   }
+
   onWhitelistChange(e){
     const addresses = e.target.value.split(',')
-    if(addresses!='undefined' && addresses.length!=0)
+    if(addresses!=='undefined' && addresses.length!==0)
     {
-      this.poolValues.whitelistAddresses = addresses.filter(w => typeof(w)!='undefined')
+      this.poolValues.whitelistAddresses = addresses.filter(w => typeof(w)!=='undefined')
     }
   }
+
   onInputValueChange(event) {
     this.poolValues[event.target.id] = event.target.value;
   }
+
   onClose(e){
     this.presalePoolService.closePresale()
     this.showPoolStatus()
   }
+
   onTransfer(e) {
     this.presalePoolService.setTransferedState()
     this.showPoolStatus()
   }
+
   onSendContribution(e) {
     this.presalePoolService.sendContribution(this.poolValues.tokenAddress, this.poolValues.contribData)
     this.showPoolStatus()
@@ -155,72 +161,73 @@ export class AdminComponent extends React.Component {
                 </div>
               </div>
               </div>
-              <h5 className="header-2"><strong>Admins</strong></h5>
-              <div className="form-inline">
-              </div>
-              <div className="form-inline-i form-inline-i_token-address">
-                <label htmlFor="token-address" className="label">Admin 1 Wallet Address</label>
-                <Input className="input" id="adminWallet1" value={this.poolValues.adminWallet1} onChange ={this.onInputValueChange}/>
-              </div>
-              <div className="form-inline-i form-inline-i_token-address">
-                <label htmlFor="token-address" className="label">Admin 2 Wallet Address</label>
-                <Input className="input" id="adminWallet2" value={this.poolValues.adminWallet2} onChange ={this.onInputValueChange}/>
-              </div>
-              <div className="form-inline-i form-inline-i_token-address">
-                <label htmlFor="token-address" className="label">Admin 3 Wallet Address</label>
-                <Input className="input" id="adminWallet3" value={this.poolValues.adminWallet3} onChange ={this.onInputValueChange}/>
-              </div>
+                <h5 className="header-2"><strong>Admins</strong></h5>
+                <div className="form-inline">
+                </div>
+                <div className="form-inline-i form-inline-i_token-address">
+                  <label htmlFor="token-address" className="label">Admin 1 Wallet Address</label>
+                  <Input className="input" id="adminWallet1" value={this.poolValues.adminWallet1} onChange ={this.onInputValueChange}/>
+                </div>
+                <div className="form-inline-i form-inline-i_token-address">
+                  <label htmlFor="token-address" className="label">Admin 2 Wallet Address</label>
+                  <Input className="input" id="adminWallet2" value={this.poolValues.adminWallet2} onChange ={this.onInputValueChange}/>
+                </div>
+                <div className="form-inline-i form-inline-i_token-address">
+                  <label htmlFor="token-address" className="label">Admin 3 Wallet Address</label>
+                  <Input className="input" id="adminWallet3" value={this.poolValues.adminWallet3} onChange ={this.onInputValueChange}/>
+                </div>
               </div>
 
               <div>
-              <h5 className="header-2"><strong>Whitelist</strong></h5>
-              <div className="form-inline">
-             <Textarea
-                data-gram
-                className="textarea"
-                 value={this.poolValues.whitelistAddresses} onChange ={this.onWhitelistChange}></Textarea>
-              </div>
+                <h5 className="header-2"><strong>Whitelist</strong></h5>
+                <div className="form-inline">
+                  <Textarea
+                    data-gram
+                    className="textarea"
+                    value={this.poolValues.whitelistAddresses} onChange ={this.onWhitelistChange}></Textarea>
+                </div>
 
-              <h5 className="header-2"><strong>Fees</strong></h5>
-              <div className="form-inline">
-              </div>
-              <div className="form-inline-i form-inline-i_token-address">
-                <label htmlFor="token-address" className="label">Pool Percentage</label>
-                <Input type="number" className="input" id="feePercentage" value={this.poolValues.feePercentage} onChange ={this.onInputValueChange} validations={[required, isPercentage]}/>
-              </div>
-              <Button className="button">Submit</Button>
+                <h5 className="header-2"><strong>Fees</strong></h5>
+                <div className="form-inline">
+                </div>
+                <div className="form-inline-i form-inline-i_token-address">
+                  <label htmlFor="token-address" className="label">Pool Percentage</label>
+                  <Input type="number" className="input" id="feePercentage" value={this.poolValues.feePercentage} onChange ={this.onInputValueChange} validations={[required, isPercentage]}/>
+                </div>
+                <Button className="button">Submit</Button>
               </div>
 
               </div>
             </Form>
           </div>
-            <div className="content-r"></div>
-        <div className="content-30">
-          <h5 className="header-2"><strong>Status</strong></h5>
+          <div className="content-r"></div>
+          <div className="content-30">
+            <h5 className="header-2"><strong>Status</strong></h5>
+            <Form>
+              <div>
+                <label className="walletAddress">{this.poolValues.status}</label>
+                <div form-inline-i form-inline-i_token-address>
+                  <Button className="button_contrib" onClick={this.onClose}><p>Close</p></Button>
+                  <Button className="button_contrib" onClick={this.onTransfer}><p>Set Transfered</p></Button>
+                </div>
+              </div>
+            </Form>
           <Form>
-          <div>
-               <label className="walletAddress">{this.poolValues.status}</label>
-               <div form-inline-i form-inline-i_token-address>
-                <Button className="button_contrib" onClick={this.onClose}><p>Close</p></Button>
-                <Button className="button_contrib" onClick={this.onTransfer}><p>Set Transfered</p></Button>
-               </div>
-          </div>
-          </Form>
-          <Form>
+            
           <h5 className="header-2"><strong>Contribution</strong></h5>
           <label htmlFor="max-contrib" className="Maximum-Per-Contributor-ETH">Contribution (ETH)</label>
           <p className="send-info-amount">{this.poolValues.contribution}</p>
           <div form-inline-i form-inline-i_token-address>
-          <label htmlFor="token-address" className="label">Destination Address</label>
-          <Input  className="input" id="tokenAddress" value={this.poolValues.tokenAddress} onChange ={this.onInputValueChange}/>
-          <label htmlFor="token-address" className="label">Data</label>
-          <Input className="input" id="contribData" value={this.poolValues.contribData} onChange ={this.onInputValueChange}/>
-           <Button className="button" onClick={this.onSendContribution}>Send Contribution</Button>
+            <label htmlFor="token-address" className="label">Destination Address</label>
+            <Input  className="input" id="tokenAddress" value={this.poolValues.tokenAddress} onChange ={this.onInputValueChange}/>
+            <label htmlFor="token-address" className="label">Data</label>
+            <Input className="input" id="contribData" value={this.poolValues.contribData} onChange ={this.onInputValueChange}/>
+             <Button className="button" onClick={this.onSendContribution}>Send Contribution</Button>
           </div>
           </Form>
-          </div>
         </div>
       </div>
+    </div>
     );
   }
 }

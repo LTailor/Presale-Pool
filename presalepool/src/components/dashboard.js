@@ -1,10 +1,9 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import Form from 'react-validation/build/form';
 import Button from 'react-validation/build/button';
 import Input from 'react-validation/build/input';
 import { inject, observer } from "mobx-react";
-import { required, isAddress, isPercentage} from "./validators"
+import { required } from "./validators"
 import Web3Utils from 'web3-utils'
 import { Line } from 'rc-progress';
 import { observable } from "mobx";
@@ -19,19 +18,6 @@ export class DashboardComponent extends React.Component {
   constructor(props){
     super(props);
     this.contributorService = props.ContributorService;
-    const pool_address = qs.parse(this.props.location.search).pool_address;
-
-    try {
-        this.contributorService.init(pool_address).then(()=>{
-        if(this.contributorService.contribution>0)
-        {
-            this.contributionPercentage = new Web3Utils.BN(this.contributorService.maxPerContributor).div(new Web3Utils.BN(this.contributorService.contribution)).toString() // check for 0
-            this.contributionPercentage = 100 / parseInt(this.contributionPercentage)
-        }})
-    }
-    catch(e) {
-        alert('ddd');
-    }
 
     this.onContribute = this.onContribute.bind(this);
     this.onWithdraw = this.onWithdraw.bind(this);
@@ -46,6 +32,22 @@ export class DashboardComponent extends React.Component {
     }
   }
 
+  componentDidMount() {
+    const pool_address = qs.parse(this.props.location.search).pool_address;
+
+    try {
+        this.contributorService.init(pool_address).then(()=>{
+        if(this.contributorService.contribution>0)
+        {
+            this.contributionPercentage = new Web3Utils.BN(this.contributorService.maxPerContributor).div(new Web3Utils.BN(this.contributorService.contribution)).toString() // check for 0
+            this.contributionPercentage = 100 / parseInt(this.contributionPercentage, 10)
+        }})
+    }
+    catch(e) {
+        console.log(e);
+    }
+  }
+  
   onContribute(e){
     this.contributorService.contribute(Web3Utils.toWei(this.state.etherValue))
     e.preventDefault();
@@ -96,7 +98,7 @@ export class DashboardComponent extends React.Component {
                 </div>
               </div>
               <div className="form-inline">
-                <div className="progressbar"><Line percent="10" strokeWidth="4" strokeColor="#A96DA3" trailColor="#1f3444" trailWidth="2" strokeWidth="2"/></div>
+                <div className="progressbar"><Line percent="10" strokeColor="#A96DA3" trailColor="#1f3444" trailWidth="2" strokeWidth="2"/></div>
               </div>
               <div>
                 <div>

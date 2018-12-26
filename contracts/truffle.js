@@ -5,17 +5,17 @@ module.exports = {
     development: {
       host: "localhost",
       port: 7545,
-      network_id: "*",
-      gasPrice: 1,
-      gas: 4612388,
-      from: "0xaa81Edab0eCB7753ea436a3A02Ba334D2d4EBb3F"
+      network_id: "5777",
+      gas:4700000000,
+      gasPrice: 10000000000,
     },
     test: {
       host: "localhost",
       port: 7545,
       network_id: "*",
       gasPrice: 100,
-      gas: 4612388
+      gas: 470000000,
+      gasPrice: 10000000000,
     }
   }
 };

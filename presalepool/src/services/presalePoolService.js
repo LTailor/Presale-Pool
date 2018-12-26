@@ -5,8 +5,6 @@ import Web3Utils from 'web3-utils'
 import getWeb3 from './getWeb3';
 import Store from '../stores/Store'
 
-const abi = require('web3-eth-abi');
-
 class PresalePoolService {
 
   presalePoolProxyAddress = "0xc9ed4e85678aed26162d8b8876fec077a94596e7";
@@ -146,7 +144,7 @@ class PresalePoolService {
 
   async save()
   {
-    if(typeof(this.poolSettings) == 'undefined')
+    if(typeof(this.poolSettings) === 'undefined')
     {
       return
     }
@@ -214,4 +212,4 @@ class PresalePoolService {
   }
 }
 
-export default new PresalePoolService;
+export default new PresalePoolService();
